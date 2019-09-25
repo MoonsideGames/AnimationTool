@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "lib": ["esnext", "dom"],
+      "outDir": "./build",
+      "noImplicitAny": true,
+      "noImplicitThis": true,
+      "strict": true,
+      "alwaysStrict": true,
+      "strictNullChecks": true,
+      "strictPropertyInitialization": false,
+      "sourceMap": true,
+      "experimentalDecorators": true
+    },
+    "include": [
+      "./app/**/*.ts",
+      "app/declarations"
+    ]
+  }
+  
