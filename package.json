@@ -1,0 +1,27 @@
+{
+  "name": "animationtool",
+  "version": "1.0.0",
+  "description": "The animation tool by Scrambler",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack/prod.config.js",
+    "start:dev": "webpack-dev-server --config webpack/dev.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MoonsideGames/AnimationTool.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/MoonsideGames/AnimationTool/issues"
+  },
+  "homepage": "https://github.com/MoonsideGames/AnimationTool#readme",
+  "devDependencies": {
+    "prettier": "^1.18.2",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "webpack-dev-server": "^3.8.1"
+  }
+}
