@@ -4,13 +4,12 @@ export class CanvasHandler {
 
 	constructor(currentImageDiv: HTMLElement) {
 		this.currentImageDiv = currentImageDiv;
+	}
+
+	public Load() {
 		this.currentImageDiv.addEventListener('onmousedown', this.clickOnImage);
 		this.currentImageDiv.addEventListener('onmouseover', this.hoverOverImage);
 	}
-
-	// public Load() {
-	// 	this.currentImageDiv.addEventListener('onmousedown', this.clickOnImage);
-	// }
 
 	private hoverOverImage() {
 		console.log('hovering over image');
