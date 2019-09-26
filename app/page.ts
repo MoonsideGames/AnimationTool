@@ -34,6 +34,7 @@ export class Page {
 		};
 
 		this.canvasHandler = new CanvasHandler(document.getElementById('currentImage') as HTMLElement);
+		// this.canvasHandler.currentImageDiv.addEventListener('onmousedown', ClickOnCanvas);
 
 		this.frameHandler = new FrameHandler(
 			document.getElementById('currentImage') as HTMLElement,
