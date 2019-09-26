@@ -1,22 +1,31 @@
 export class FileHandler {
-	public static ProcessImages(fileList: FileList): string[] {
-		const filenames: string[] = [];
+	public static ProcessImages = (fileList: FileList): Promise<string[]> => {
+		return new Promise(async (resolve, reject) => {
+			const filenames: string[] = [];
 
-		// files is a FileList of File objects. List some properties.
-		for (let i = 0; i < fileList.length; i++) {
-			const f = fileList[i];
+			for (let i = 0; i < fileList.length; i++) {
+				const file = fileList[i];
+				const filename = await FileHandler.ProcessImage(file);
+
+				filenames.push(filename);
+			}
+
+			resolve(filenames);
+		});
+	};
+
+	private static ProcessImage = (file: File): Promise<string> => {
+		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 
-			reader.onload = ((theFile) => {
-				return (e: any) => {
-					filenames.push(e.target.result);
-				};
-			})(f);
+			reader.onload = (event: any) => {
+				resolve(event.target!.result);
+			};
+
+			reader.onerror = reject;
 
 			// Read in the image file as a data URL.
-			reader.readAsDataURL(f);
-		}
-
-		return filenames;
-	}
+			reader.readAsDataURL(file);
+		});
+	};
 }

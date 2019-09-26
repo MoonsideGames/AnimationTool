@@ -1,5 +1,8 @@
+import { CanvasHandler } from './canvas_handler';
 import { FileHandler } from './file_handler';
 import { FrameHandler } from './frame_handler';
+import { IAnimationData } from './Interfaces/IAnimationData';
+import { IFrame } from './Interfaces/IFrame';
 
 export class Page {
 	private static handleDragOver(evt: DragEvent) {
@@ -10,14 +13,34 @@ export class Page {
 		}
 	}
 
-	private filenames: string[] = [];
+	private frameHandler: FrameHandler;
+	private canvasHandler: CanvasHandler;
+	private animationData: IAnimationData;
 
 	public Load() {
-		// const fileHandler = new FileHandler('dropZone', 'output', this.filenames);
-		const frameHandler = new FrameHandler(document.getElementById('currentImage') as HTMLElement);
+		// defining blank slate animation data
+		this.animationData = {
+			pins: [],
+			originX: 0,
+			originY: 0,
+			frameRate: 30,
+			loop: true,
+			frames: [
+				{
+					filename: '',
+					pinData: []
+				}
+			]
+		};
+
+		this.canvasHandler = new CanvasHandler(document.getElementById('currentImage') as HTMLElement);
+
+		this.frameHandler = new FrameHandler(
+			document.getElementById('currentImage') as HTMLElement,
+			document.getElementById('frameNumber') as HTMLElement
+		);
 
 		const dropZone = document.getElementById('dropZone') as HTMLElement;
-		const output = document.getElementById('output') as HTMLElement;
 
 		dropZone.addEventListener('dragover', Page.handleDragOver, false);
 		dropZone.addEventListener('drop', this.handleFileSelect, false);
@@ -27,14 +50,14 @@ export class Page {
 				case 39: {
 					// right_arrow
 					console.log('next frame action');
-					frameHandler.AdvanceFrames(1);
+					this.frameHandler.AdvanceFrames(1);
 					break;
 				}
 
 				case 37: {
 					// left arrow
 					console.log('previous frame action');
-					frameHandler.AdvanceFrames(-1);
+					this.frameHandler.AdvanceFrames(-1);
 					break;
 				}
 			}
@@ -43,12 +66,23 @@ export class Page {
 		document.addEventListener('keydown', keyDown);
 	}
 
-	private handleFileSelect = (event: any) => {
+	private handleFileSelect = async (event: DragEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		FileHandler.ProcessImages(event.target.result);
+		const filenames = await FileHandler.ProcessImages(event.dataTransfer!.files);
+		this.frameHandler.loadFrames(filenames);
 
-		console.log('files: ' + this.filenames.length);
+		const newFrames: IFrame[] = [];
+
+		for (let i = 0; i < event.dataTransfer!.files.length; i++) {
+			newFrames.push({
+				filename: event.dataTransfer!.files[i].name,
+				pinData: []
+			});
+		}
+
+		this.animationData.frames = newFrames;
+		console.log(this.animationData);
 	};
 }
