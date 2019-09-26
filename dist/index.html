@@ -7,19 +7,27 @@
     <link rel="stylesheet" href="assets/stylesheets/main.css">
   </head>
 	<body>
-
         <div id="dropZone">
-          <div id="instructions" class="instruction">
-            <p>Drag images onto the page to upload them. Advance frames with arrow keys</p>
+          <div id = "topbar">
+            <div id="instructions" class="instruction">
+              <p>Drag images onto the page to upload them. Advance frames with arrow keys</p>
+            </div>
           </div>
-          <div id="output"></div>
 
           <div id="frameNumber" class="warning">
               <p></p>
           </div>
           <!-- canvas -->
           <div id="currentImage">
-            <img alt="">
+            <img alt="No images uploaded">
+          </div>
+
+          <div id="settings">
+              Origin X: <input type="text" name="originX" value="0" size="2">
+              Y: <input type="text" name="originX" value="0" size="2"><br>
+              Fps: <input type="text" name="FirstName" value="60"><br>
+              <input type="checkbox" name="looping" > Looping <br>
+              <button type="button" onclick="alert('saved')">export .anim</button>
           </div>
           
         </div>

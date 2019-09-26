@@ -4,10 +4,18 @@ export class FrameHandler {
 	private filenames: string[] = [];
 	private currentFrame: number = 0;
 	private currentImageDiv: HTMLElement;
+	private playingAnimation: boolean;
 
 	constructor(currentImageDiv: HTMLElement, frameNumberDiv: HTMLElement) {
 		this.currentImageDiv = currentImageDiv;
 		this.frameNumberDiv = frameNumberDiv;
+		setTimeout(this.Update, 1000 / 60);
+	}
+
+	public Update() {
+		console.log('updating');
+		AdvanceFrames(1);
+		setTimeout(this.Update, 1000 / 60);
 	}
 
 	public GetCurrentFrame(): number {
@@ -42,7 +50,12 @@ export class FrameHandler {
 		} else {
 			this.frameNumberDiv.className = 'instruction';
 			this.frameNumberDiv.innerText =
-				'Frame ' + this.currentFrame.toString() + '/' + (this.filenames.length - 1).toString();
+				'Frame  ' + this.currentFrame.toString() + ' / ' + (this.filenames.length - 1).toString();
 		}
+	}
+
+	public TogglePlayingAnimation() {
+		this.playingAnimation = !this.playingAnimation;
+		console.log('playingAnimation = ', this.playingAnimation);
 	}
 }

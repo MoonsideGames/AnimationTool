@@ -48,18 +48,30 @@ export class Page {
 
 		const keyDown = (event: KeyboardEvent) => {
 			switch (event.keyCode) {
-				case 39: {
-					// right_arrow
+				case 39:
+				case 190: {
+					// right_arrow, carrot
 					console.log('next frame action');
 					this.frameHandler.AdvanceFrames(1);
 					break;
 				}
 
-				case 37: {
-					// left arrow
+				case 37:
+				case 188: {
+					// left arrow, carrot
 					console.log('previous frame action');
 					this.frameHandler.AdvanceFrames(-1);
 					break;
+				}
+
+				case 40: {
+					// down arrow
+					this.frameHandler.GoToFrame(0);
+				}
+
+				case 32: {
+					// spacebar
+					this.frameHandler.TogglePlayingAnimation();
 				}
 			}
 		};
