@@ -37,9 +37,12 @@ export class FrameHandler {
 	private SetCurrentImageDiv() {
 		this.currentImageDiv.innerHTML = `<img src="${this.filenames[this.currentFrame]}"></img>`;
 		if (this.filenames.length === 0) {
-			this.frameNumberDiv.innerText = 'No images uploaded yet. Drag images onto the page to upload them';
+			this.frameNumberDiv.className = 'warning';
+			this.frameNumberDiv.innerText = 'No images uploaded yet';
 		} else {
-			this.frameNumberDiv.innerText = 'Current Frame: ' + this.currentFrame.toString();
+			this.frameNumberDiv.className = 'instruction';
+			this.frameNumberDiv.innerText =
+				'Frame ' + this.currentFrame.toString() + '/' + (this.filenames.length - 1).toString();
 		}
 	}
 }
