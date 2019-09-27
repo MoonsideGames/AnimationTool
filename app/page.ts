@@ -37,6 +37,7 @@ export class Page {
 		// this.canvasHandler.currentImageDiv.addEventListener('onmousedown', ClickOnCanvas);
 
 		this.frameHandler = new FrameHandler(
+			this.animationData,
 			document.getElementById('currentImage') as HTMLElement,
 			document.getElementById('frameNumber') as HTMLElement
 		);
@@ -48,11 +49,32 @@ export class Page {
 
 		const keyDown = (event: KeyboardEvent) => {
 			switch (event.keyCode) {
+				case 48:
+				case 49:
+				case 50:
+				case 51:
+				case 52:
+				case 53:
+				case 54:
+				case 55:
+				case 56:
+				case 57: {
+					// goto frame w 1234567890
+					if (event.keyCode === 48) {
+						this.frameHandler.GoToFrame(9);
+					} else {
+						this.frameHandler.GoToFrame(event.keyCode - 49);
+					}
+					this.frameHandler.StopPlayingAnimation();
+					break;
+				}
+
 				case 39:
 				case 190: {
 					// right_arrow, carrot
 					console.log('next frame action');
 					this.frameHandler.AdvanceFrames(1);
+					this.frameHandler.StopPlayingAnimation();
 					break;
 				}
 
@@ -61,17 +83,27 @@ export class Page {
 					// left arrow, carrot
 					console.log('previous frame action');
 					this.frameHandler.AdvanceFrames(-1);
+					this.frameHandler.StopPlayingAnimation();
 					break;
 				}
 
 				case 40: {
 					// down arrow
 					this.frameHandler.GoToFrame(0);
+					this.frameHandler.StopPlayingAnimation();
+					break;
 				}
 
 				case 32: {
 					// spacebar
 					this.frameHandler.TogglePlayingAnimation();
+					break;
+				}
+
+				case 83: {
+					// s
+					this.download('.anim', String(this.animationData));
+					break;
 				}
 			}
 		};
@@ -98,4 +130,17 @@ export class Page {
 		this.animationData.frames = newFrames;
 		console.log(this.animationData);
 	};
+
+	private download(filename: string, text: string) {
+		var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	}
 }

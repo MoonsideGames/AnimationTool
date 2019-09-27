@@ -1,21 +1,21 @@
+import { IAnimationData } from './Interfaces/IAnimationData';
+
 export class FrameHandler {
+	private start: number = 0;
+
 	private frameNumberDiv: HTMLElement;
+	private animationData: IAnimationData;
 
 	private filenames: string[] = [];
 	private currentFrame: number = 0;
 	private currentImageDiv: HTMLElement;
 	private playingAnimation: boolean;
 
-	constructor(currentImageDiv: HTMLElement, frameNumberDiv: HTMLElement) {
+	constructor(animationData: IAnimationData, currentImageDiv: HTMLElement, frameNumberDiv: HTMLElement) {
+		this.animationData = animationData;
 		this.currentImageDiv = currentImageDiv;
 		this.frameNumberDiv = frameNumberDiv;
-		setTimeout(this.Update, 1000 / 60);
-	}
-
-	public Update() {
-		console.log('updating');
-		AdvanceFrames(1);
-		setTimeout(this.Update, 1000 / 60);
+		window.requestAnimationFrame(this.windowAnimationUpdate);
 	}
 
 	public GetCurrentFrame(): number {
@@ -42,6 +42,14 @@ export class FrameHandler {
 		this.SetCurrentImageDiv();
 	}
 
+	public TogglePlayingAnimation() {
+		this.playingAnimation = !this.playingAnimation;
+		console.log('playingAnimation = ', this.playingAnimation);
+	}
+	public StopPlayingAnimation() {
+		this.playingAnimation = false;
+	}
+
 	private SetCurrentImageDiv() {
 		this.currentImageDiv.innerHTML = `<img src="${this.filenames[this.currentFrame]}"></img>`;
 		if (this.filenames.length === 0) {
@@ -50,12 +58,20 @@ export class FrameHandler {
 		} else {
 			this.frameNumberDiv.className = 'instruction';
 			this.frameNumberDiv.innerText =
-				'Frame  ' + this.currentFrame.toString() + ' / ' + (this.filenames.length - 1).toString();
+				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
 		}
 	}
 
-	public TogglePlayingAnimation() {
-		this.playingAnimation = !this.playingAnimation;
-		console.log('playingAnimation = ', this.playingAnimation);
-	}
+	private windowAnimationUpdate = (timestamp: number) => {
+		if (this.start === 0) {
+			this.start = timestamp;
+		}
+		const progress = timestamp - this.start;
+		if (this.playingAnimation && progress > 1000 / this.animationData.frameRate) {
+			this.AdvanceFrames(1);
+			this.start = 0;
+		}
+		window.requestAnimationFrame(this.windowAnimationUpdate);
+		console.log('timestamp = ' + timestamp);
+	};
 }

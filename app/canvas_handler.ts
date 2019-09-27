@@ -1,4 +1,4 @@
-//I display the canvas and am clickable
+// I display the canvas and am clickable
 export class CanvasHandler {
 	private currentImageDiv: HTMLElement;
 
