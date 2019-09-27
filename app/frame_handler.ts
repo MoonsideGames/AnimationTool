@@ -72,6 +72,6 @@ export class FrameHandler {
 			this.start = 0;
 		}
 		window.requestAnimationFrame(this.windowAnimationUpdate);
-		console.log('timestamp = ' + timestamp);
+		// console.log('timestamp = ' + timestamp);
 	};
 }

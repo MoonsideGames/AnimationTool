@@ -16,6 +16,7 @@ export class Page {
 	private frameHandler: FrameHandler;
 	private canvasHandler: CanvasHandler;
 	private animationData: IAnimationData;
+	private frameRateInput: HTMLInputElement;
 
 	public Load() {
 		// defining blank slate animation data
@@ -41,6 +42,9 @@ export class Page {
 			document.getElementById('currentImage') as HTMLElement,
 			document.getElementById('frameNumber') as HTMLElement
 		);
+
+		this.frameRateInput = document.getElementById('framerate') as HTMLInputElement;
+		this.frameRateInput.addEventListener('change', this.updateFrameRate);
 
 		const dropZone = document.getElementById('dropZone') as HTMLElement;
 
@@ -102,7 +106,7 @@ export class Page {
 
 				case 83: {
 					// s
-					this.download('.anim', String(this.animationData));
+					this.download('.anim', JSON.stringify(this.animationData));
 					break;
 				}
 			}
@@ -143,4 +147,9 @@ export class Page {
 
 		document.body.removeChild(element);
 	}
+
+	private updateFrameRate = () => {
+		this.animationData.frameRate = this.frameRateInput.valueAsNumber;
+		console.log('new frame rate = ' + this.animationData.frameRate);
+	};
 }
