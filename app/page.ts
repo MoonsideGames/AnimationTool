@@ -2,6 +2,7 @@ import { CanvasHandler } from './canvas_handler';
 import { FileHandler } from './file_handler';
 import { FrameHandler } from './frame_handler';
 import { IAnimationData } from './Interfaces/IAnimationData';
+import { ICanvasData } from './Interfaces/ICanvasData';
 import { IFrame } from './Interfaces/IFrame';
 
 export class Page {
@@ -22,6 +23,8 @@ export class Page {
 	private canvasImage: HTMLCanvasElement;
 	private canvasContext: CanvasRenderingContext2DSettings;
 
+	private canvasData: ICanvasData;
+
 	public Load() {
 		// defining blank slate animation data
 		this.animationData = {
@@ -37,26 +40,39 @@ export class Page {
 				}
 			]
 		};
+		//blank slate canvas data
+		this.canvasData = {
+			width: 0,
+			height: 0,
+			widthRatio: 0,
+			heightRatio: 0
+		};
+
+		const canvasElement = document.getElementById('canvasImage') as HTMLCanvasElement;
+
+		const imageElement = new Image();
 
 		// setup canvas
-		this.canvasImage = document.getElementById('canvasImage') as HTMLCanvasElement;
-		this.canvasImage.width = 256;
-		this.canvasImage.height = 256;
-
-		const canvasContext: CanvasRenderingContext2D = this.canvasImage.getContext('2d')!;
-		canvasContext.fillRect(0, 0, 256, 256);
-
-		this.canvasHandler = new CanvasHandler(document.getElementById('currentImage') as HTMLElement);
-		// this.canvasHandler.currentImageDiv.addEventListener('onmousedown', ClickOnCanvas);
-
-		this.frameHandler = new FrameHandler(
+		this.canvasHandler = new CanvasHandler(
 			this.animationData,
-			this.canvasImage,
-			canvasContext,
-			document.getElementById('frameNumber') as HTMLElement
+			this.canvasData,
+			canvasElement,
+			document.getElementById('currentImage') as HTMLElement,
+			imageElement,
+			document.getElementById('originInfo') as HTMLElement
 		);
 
-		//input elements
+		// setup frame handler
+		this.frameHandler = new FrameHandler(
+			this.animationData,
+			this.canvasData,
+			canvasElement,
+			canvasElement.getContext('2d')!,
+			document.getElementById('frameNumber') as HTMLElement,
+			imageElement
+		);
+
+		// input elements
 		this.frameRateInput = document.getElementById('framerate') as HTMLInputElement;
 		this.frameRateInput.addEventListener('change', this.updateFrameRate);
 		this.frameRateInput.value = this.animationData.frameRate.toString();
@@ -153,6 +169,7 @@ export class Page {
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
 		console.log(this.animationData);
+		//set framedata initialized to true
 	};
 
 	private download(filename: string, text: string) {
@@ -170,6 +187,8 @@ export class Page {
 
 	private updateFrameRate = () => {
 		this.animationData.frameRate = this.frameRateInput.valueAsNumber;
+		this.frameHandler.StopPlayingAnimation();
+		this.frameHandler.TogglePlayingAnimation();
 		console.log('new frame rate = ' + this.animationData.frameRate);
 	};
 
