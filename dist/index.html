@@ -19,14 +19,14 @@
           </div>
           <!-- canvas -->
           <div id="currentImage">
-            <img alt="No images uploaded">
+            <canvas id="canvasImage" alt="No images uploaded"></canvas>
           </div>
 
           <div id="settings">
               Origin X: <input type="number" name="originX" value="0" class="numberinput">
               Y: <input type="number" name="originY" value="0" class="numberinput"><br>
-              Fps: <input type="number" id="framerate" value="60" class="numberinput"><br>
-              <input type="checkbox" name="looping" > Looping <br>
+              Fps: <input type="number" id="framerate" class="numberinput"><br>
+              <input type="checkbox" id="looping" > Looping <br>
               <button id="saveButton" type="button">export .anim with (S)</button>
           </div>
           

@@ -17,6 +17,10 @@ export class Page {
 	private canvasHandler: CanvasHandler;
 	private animationData: IAnimationData;
 	private frameRateInput: HTMLInputElement;
+	private loopingInput: HTMLInputElement;
+
+	private canvasImage: HTMLCanvasElement;
+	private canvasContext: CanvasRenderingContext2DSettings;
 
 	public Load() {
 		// defining blank slate animation data
@@ -34,17 +38,30 @@ export class Page {
 			]
 		};
 
+		// setup canvas
+		this.canvasImage = document.getElementById('canvasImage') as HTMLCanvasElement;
+		this.canvasImage.width = 256;
+		this.canvasImage.height = 256;
+
+		const canvasContext: CanvasRenderingContext2D = this.canvasImage.getContext('2d')!;
+		canvasContext.fillRect(0, 0, 256, 256);
+
 		this.canvasHandler = new CanvasHandler(document.getElementById('currentImage') as HTMLElement);
 		// this.canvasHandler.currentImageDiv.addEventListener('onmousedown', ClickOnCanvas);
 
 		this.frameHandler = new FrameHandler(
 			this.animationData,
-			document.getElementById('currentImage') as HTMLElement,
+			this.canvasImage,
+			canvasContext,
 			document.getElementById('frameNumber') as HTMLElement
 		);
 
+		//input elements
 		this.frameRateInput = document.getElementById('framerate') as HTMLInputElement;
 		this.frameRateInput.addEventListener('change', this.updateFrameRate);
+		this.frameRateInput.value = this.animationData.frameRate.toString();
+		this.loopingInput = document.getElementById('looping') as HTMLInputElement;
+		this.loopingInput.addEventListener('change', this.updateLooping);
 
 		const dropZone = document.getElementById('dropZone') as HTMLElement;
 
@@ -132,6 +149,9 @@ export class Page {
 		}
 
 		this.animationData.frames = newFrames;
+		this.frameHandler.GoToFrame(0);
+		this.frameHandler.StopPlayingAnimation();
+		this.frameHandler.TogglePlayingAnimation();
 		console.log(this.animationData);
 	};
 
@@ -151,5 +171,10 @@ export class Page {
 	private updateFrameRate = () => {
 		this.animationData.frameRate = this.frameRateInput.valueAsNumber;
 		console.log('new frame rate = ' + this.animationData.frameRate);
+	};
+
+	private updateLooping = () => {
+		this.animationData.loop = this.loopingInput.checked;
+		console.log('new looping value = ' + this.loopingInput.checked);
 	};
 }

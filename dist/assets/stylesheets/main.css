@@ -38,14 +38,16 @@ body {
 	height: 100%;
 }
 
-#currentImage {
+#imageCanvas {
+	border: 2px solid #6b7578;
 	width: 256;
 	height: 256;
 	-ms-interpolation-mode: nearest-neighbor;
 	image-rendering: pixelated;
 }
 
-#currentImage img {
+#currentImage {
+	border: 2px solid #6b7578;
 	object-position: center top;
 	width: 256;
 	height: 256;

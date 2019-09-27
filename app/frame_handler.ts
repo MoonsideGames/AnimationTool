@@ -8,14 +8,26 @@ export class FrameHandler {
 
 	private filenames: string[] = [];
 	private currentFrame: number = 0;
-	private currentImageDiv: HTMLElement;
 	private playingAnimation: boolean;
 
-	constructor(animationData: IAnimationData, currentImageDiv: HTMLElement, frameNumberDiv: HTMLElement) {
+	private canvasImage: HTMLCanvasElement;
+	private canvasContext: CanvasRenderingContext2D;
+
+	private imageElement: HTMLImageElement;
+
+	constructor(
+		animationData: IAnimationData,
+		canvasImage: HTMLCanvasElement,
+		canvasContext: CanvasRenderingContext2D,
+		frameNumberDiv: HTMLElement
+	) {
 		this.animationData = animationData;
-		this.currentImageDiv = currentImageDiv;
+		this.canvasImage = canvasImage;
+		this.canvasContext = canvasContext;
 		this.frameNumberDiv = frameNumberDiv;
 		window.requestAnimationFrame(this.windowAnimationUpdate);
+		this.imageElement = new Image();
+		this.canvasContext.imageSmoothingEnabled = false;
 	}
 
 	public GetCurrentFrame(): number {
@@ -25,7 +37,7 @@ export class FrameHandler {
 	public loadFrames(filenames: string[]) {
 		this.filenames = filenames;
 		this.currentFrame = 0;
-		this.SetCurrentImageDiv();
+		this.RefreshImage();
 	}
 
 	public AdvanceFrames(amount: number) {
@@ -39,7 +51,7 @@ export class FrameHandler {
 
 	public GoToFrame(frame: number) {
 		this.currentFrame = frame;
-		this.SetCurrentImageDiv();
+		this.RefreshImage();
 	}
 
 	public TogglePlayingAnimation() {
@@ -50,12 +62,14 @@ export class FrameHandler {
 		this.playingAnimation = false;
 	}
 
-	private SetCurrentImageDiv() {
-		this.currentImageDiv.innerHTML = `<img src="${this.filenames[this.currentFrame]}"></img>`;
+	private RefreshImage() {
 		if (this.filenames.length === 0) {
 			this.frameNumberDiv.className = 'warning';
 			this.frameNumberDiv.innerText = 'No images uploaded yet';
 		} else {
+			this.canvasContext.clearRect(0, 0, this.canvasImage.width, this.canvasImage.height);
+			this.imageElement.src = this.filenames[this.currentFrame];
+			this.canvasContext.drawImage(this.imageElement, 0, 0, this.canvasImage.width, this.canvasImage.height);
 			this.frameNumberDiv.className = 'instruction';
 			this.frameNumberDiv.innerText =
 				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
