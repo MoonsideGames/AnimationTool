@@ -24,6 +24,7 @@ export class Page {
 	private canvasContext: CanvasRenderingContext2DSettings;
 
 	private canvasData: ICanvasData;
+	private filenameInput: HTMLInputElement;
 
 	public Load() {
 		// defining blank slate animation data
@@ -78,6 +79,7 @@ export class Page {
 		this.frameRateInput.value = this.animationData.frameRate.toString();
 		this.loopingInput = document.getElementById('looping') as HTMLInputElement;
 		this.loopingInput.addEventListener('change', this.updateLooping);
+		this.filenameInput = document.getElementById('filename') as HTMLInputElement;
 
 		const dropZone = document.getElementById('dropZone') as HTMLElement;
 
@@ -139,7 +141,9 @@ export class Page {
 
 				case 83: {
 					// s
-					this.download('.anim', JSON.stringify(this.animationData));
+					if (document.activeElement !== this.filenameInput) {
+						this.download(this.filenameInput.value + '.anim', JSON.stringify(this.animationData));
+					}
 					break;
 				}
 			}
