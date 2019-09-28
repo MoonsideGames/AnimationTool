@@ -6,6 +6,7 @@ import { FrameHandler } from './frame_handler';
 import { IAnimationData } from './Interfaces/IAnimationData';
 import { ICanvasData } from './Interfaces/ICanvasData';
 import { IFrame } from './Interfaces/IFrame';
+import { PinHandler } from './pin_handler';
 
 export class Page {
 	private static handleDragOver(evt: DragEvent) {
@@ -16,6 +17,7 @@ export class Page {
 		}
 	}
 
+	private pinHandler: PinHandler;
 	private frameHandler: FrameHandler;
 	private canvasHandler: CanvasHandler;
 	private animationData: IAnimationData;
@@ -54,6 +56,11 @@ export class Page {
 		const canvasElement = document.getElementById('canvasImage') as HTMLCanvasElement;
 
 		const imageElement = new Image();
+
+		this.pinHandler = new PinHandler(
+			document.getElementById('addpin') as HTMLElement,
+			document.getElementById('pinSettings') as HTMLElement
+		);
 
 		// setup canvas
 		this.canvasHandler = new CanvasHandler(
