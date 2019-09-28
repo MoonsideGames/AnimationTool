@@ -108,6 +108,7 @@ export class FrameHandler {
 			this.AdvanceFrames(1);
 			this.start = 0;
 		}
+		this.RefreshImage();
 		window.requestAnimationFrame(this.windowAnimationUpdate);
 		// console.log('timestamp = ' + timestamp);
 	};
