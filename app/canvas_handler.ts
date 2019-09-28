@@ -3,36 +3,45 @@ import { ICanvasData } from './Interfaces/ICanvasData';
 
 // I display the canvas and am clickable
 export class CanvasHandler {
-	private currentImageDiv: HTMLElement;
 	private canvasImage: HTMLCanvasElement;
 	private imageElement: HTMLImageElement;
 	private animationData: IAnimationData;
 	private canvasData: ICanvasData;
 	private orginInfo: HTMLElement;
 
+	private targetImageSize: number = 256;
+
 	constructor(
 		animationData: IAnimationData,
 		canvasData: ICanvasData,
 		canvasImage: HTMLCanvasElement,
-		currentImageDiv: HTMLElement,
 		imageElement: HTMLImageElement,
 		originInfo: HTMLElement
 	) {
 		this.animationData = animationData;
 		this.canvasData = canvasData;
 		this.canvasImage = canvasImage;
-		this.currentImageDiv = currentImageDiv;
 		this.imageElement = imageElement;
 		this.orginInfo = originInfo;
 
-		//setup canvas
-		this.canvasImage.width = 256;
-		this.canvasImage.height = 256;
+		this.ResizeCanvas();
 		this.UpdateCanvasDataSize();
 		const canvasContext: CanvasRenderingContext2D = this.canvasImage.getContext('2d')!;
-		canvasContext.fillRect(0, 0, 256, 256);
+		canvasContext.fillRect(0, 0, this.targetImageSize, this.targetImageSize);
+		canvasContext.imageSmoothingEnabled = false;
 
-		this.currentImageDiv.addEventListener('click', this.mouseDown);
+		this.canvasImage.addEventListener('click', this.mouseDown);
+	}
+
+	public ResizeCanvas() {
+		// get image ratio, then scale default width by it
+		const hwratio = this.imageElement.height / this.imageElement.width;
+		const newWidth = this.targetImageSize / hwratio;
+		const newHeight = this.targetImageSize;
+		console.log('hwratio = ' + hwratio);
+		this.canvasImage.width = newWidth;
+		this.canvasImage.height = newHeight;
+		this.UpdateCanvasDataSize();
 	}
 
 	private UpdateCanvasDataSize() {

@@ -33,7 +33,6 @@ export class FrameHandler {
 		this.frameNumberDiv = frameNumberDiv;
 		window.requestAnimationFrame(this.windowAnimationUpdate);
 		this.imageElement = imageElement;
-		this.canvasContext.imageSmoothingEnabled = false;
 	}
 
 	public GetCurrentFrame(): number {
@@ -74,6 +73,7 @@ export class FrameHandler {
 			this.frameNumberDiv.innerText = 'No images uploaded yet';
 		} else {
 			this.canvasContext.clearRect(0, 0, this.htmlCanvasElement.width, this.htmlCanvasElement.height);
+			this.canvasContext.imageSmoothingEnabled = false;
 			this.imageElement.src = this.filenames[this.currentFrame];
 			// draw sprite
 			this.canvasContext.drawImage(
@@ -93,7 +93,6 @@ export class FrameHandler {
 			this.canvasContext.moveTo(originX - originCursorSize, originY);
 			this.canvasContext.lineTo(originX + originCursorSize, originY);
 			this.canvasContext.stroke();
-
 			this.frameNumberDiv.className = 'instruction';
 			this.frameNumberDiv.innerText =
 				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();

@@ -38,21 +38,7 @@ body {
 	height: 100%;
 }
 
-#imageCanvas {
+#canvasImage {
 	border: 2px solid #6b7578;
-	width: 256;
-	height: 256;
-	-ms-interpolation-mode: nearest-neighbor;
 	image-rendering: pixelated;
-}
-
-#currentImage {
-	border: 2px solid #6b7578;
-	object-position: center top;
-	width: 256;
-	height: 256;
-	min-width: 256;
-	min-height: 256;
-	-ms-interpolation-mode: nearest-neighbor;
-	image-rendering: crisp-edges;
 }

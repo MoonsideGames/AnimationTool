@@ -58,7 +58,6 @@ export class Page {
 			this.animationData,
 			this.canvasData,
 			canvasElement,
-			document.getElementById('currentImage') as HTMLElement,
 			imageElement,
 			document.getElementById('originInfo') as HTMLElement
 		);
@@ -172,7 +171,9 @@ export class Page {
 		this.frameHandler.GoToFrame(0);
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
-		console.log(this.animationData);
+
+		this.canvasHandler.ResizeCanvas();
+
 		//set framedata initialized to true
 	};
 
