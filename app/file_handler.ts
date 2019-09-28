@@ -18,8 +18,8 @@ export class FileHandler {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 
-			reader.onload = (event: any) => {
-				resolve(event.target!.result);
+			reader.onload = (event: ProgressEvent<FileReader>) => {
+				resolve(event.target!.result as string);
 			};
 
 			reader.onerror = reject;

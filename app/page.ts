@@ -1,3 +1,5 @@
+import { saveAs } from 'file-saver';
+import * as JSZip from 'jszip';
 import { CanvasHandler } from './canvas_handler';
 import { FileHandler } from './file_handler';
 import { FrameHandler } from './frame_handler';
@@ -41,7 +43,7 @@ export class Page {
 				}
 			]
 		};
-		//blank slate canvas data
+		// blank slate canvas data
 		this.canvasData = {
 			width: 0,
 			height: 0,
@@ -139,11 +141,23 @@ export class Page {
 				}
 
 				case 83: {
-					// s
-					if (document.activeElement !== this.filenameInput) {
-						this.download(this.filenameInput.value + '.anim', JSON.stringify(this.animationData));
+					const zip = new JSZip();
+					// name of project
+					const name = this.filenameInput.value;
+					// .anim file
+					zip.file(name + '.anim', JSON.stringify(this.animationData));
+					// pngs
+					const filenames = this.frameHandler.GetFilenames();
+					for (let i = 0; i < filenames.length; i++) {
+						const filedata = filenames[i].split('base64,')[1];
+						const padding = i;
+						zip.file(name + padding.toString() + '.png', filedata, { base64: true });
 					}
-					break;
+					// save zip
+					zip.generateAsync({ type: 'blob' }).then((content) => {
+						// see FileSaver.js
+						saveAs(content, name + '.zip');
+					});
 				}
 			}
 		};
@@ -174,21 +188,21 @@ export class Page {
 
 		this.canvasHandler.ResizeCanvas();
 
-		//set framedata initialized to true
+		// set framedata initialized to true
 	};
 
-	private download(filename: string, text: string) {
-		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		element.setAttribute('download', filename);
+	// private download(filename: string, text: string) {
+	// 	var element = document.createElement('a');
+	// 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	// 	element.setAttribute('download', filename);
 
-		element.style.display = 'none';
-		document.body.appendChild(element);
+	// 	element.style.display = 'none';
+	// 	document.body.appendChild(element);
 
-		element.click();
+	// 	element.click();
 
-		document.body.removeChild(element);
-	}
+	// 	document.body.removeChild(element);
+	// }
 
 	private updateFrameRate = () => {
 		this.animationData.frameRate = this.frameRateInput.valueAsNumber;

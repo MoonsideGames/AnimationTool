@@ -67,6 +67,10 @@ export class FrameHandler {
 		this.playingAnimation = false;
 	}
 
+	public GetFilenames(): string[] {
+		return this.filenames;
+	}
+
 	private RefreshImage() {
 		if (this.filenames.length === 0) {
 			this.frameNumberDiv.className = 'warning';
