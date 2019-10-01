@@ -4,8 +4,8 @@ import { CanvasHandler } from './canvas_handler';
 import { FileHandler } from './file_handler';
 import { FrameHandler } from './frame_handler';
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { IProjectData } from './Interfaces/IProjectData';
 import { IFrame } from './Interfaces/IFrame';
+import { IProjectData } from './Interfaces/IProjectData';
 import { PinHandler } from './pin_handler';
 
 export class Page {

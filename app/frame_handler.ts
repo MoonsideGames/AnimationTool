@@ -1,6 +1,6 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { IProjectData } from './Interfaces/IProjectData';
 import { IFramePinData } from './Interfaces/IFramePinData';
+import { IProjectData } from './Interfaces/IProjectData';
 
 export class FrameHandler {
 	private start: number = 0;
@@ -74,7 +74,7 @@ export class FrameHandler {
 
 	public TogglePlayingAnimation() {
 		this.playingAnimation = !this.playingAnimation;
-		if (this.playingAnimation && this.currentFrame == this.filenames.length - 1 && !this.animationData.loop) {
+		if (this.playingAnimation && this.currentFrame === this.filenames.length - 1 && !this.animationData.loop) {
 			this.currentFrame = -1;
 		}
 		console.log('playingAnimation = ', this.playingAnimation);
@@ -116,7 +116,9 @@ export class FrameHandler {
 			// draw pins
 			for (let i = 0; i < 10; i++) {
 				this.canvasContext.strokeStyle = '#FF0000';
-				let currentSelectedPinData: IFramePinData = this.animationData.frames[this.projectData.currentFrame][i];
+				const currentSelectedPinData: IFramePinData = this.animationData.frames[this.projectData.currentFrame][
+					i
+				];
 				if (currentSelectedPinData !== null && currentSelectedPinData !== undefined) {
 					this.DrawCrossHair(50, this.canvasContext, currentSelectedPinData.x, currentSelectedPinData.y);
 				}
