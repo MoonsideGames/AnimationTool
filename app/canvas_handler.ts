@@ -1,25 +1,26 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { ICanvasData } from './Interfaces/ICanvasData';
+import { IProjectData } from './Interfaces/IProjectData';
+import { IFramePinData } from './Interfaces/IFramePinData';
 
 // I display the canvas and am clickable
 export class CanvasHandler {
 	private canvasImage: HTMLCanvasElement;
 	private imageElement: HTMLImageElement;
 	private animationData: IAnimationData;
-	private canvasData: ICanvasData;
+	private projectData: IProjectData;
 	private orginInfo: HTMLElement;
 
 	private targetImageSize: number = 256;
 
 	constructor(
 		animationData: IAnimationData,
-		canvasData: ICanvasData,
+		canvasData: IProjectData,
 		canvasImage: HTMLCanvasElement,
 		imageElement: HTMLImageElement,
 		originInfo: HTMLElement
 	) {
 		this.animationData = animationData;
-		this.canvasData = canvasData;
+		this.projectData = canvasData;
 		this.canvasImage = canvasImage;
 		this.imageElement = imageElement;
 		this.orginInfo = originInfo;
@@ -45,8 +46,8 @@ export class CanvasHandler {
 	}
 
 	private UpdateCanvasDataSize() {
-		this.canvasData.width = this.canvasImage.width;
-		this.canvasData.height = this.canvasImage.height;
+		this.projectData.width = this.canvasImage.width;
+		this.projectData.height = this.canvasImage.height;
 	}
 
 	private mouseDown = (event: MouseEvent) => {
@@ -57,12 +58,25 @@ export class CanvasHandler {
 		const pixelX: number = Math.floor(event.offsetX / ratioWidth);
 		const pixelY: number = Math.floor(event.offsetY / ratioHeight);
 		console.log('CLICK X:' + pixelX + ' Y:' + pixelY);
-		// update animation data
-		this.animationData.originX = pixelX;
-		this.animationData.originY = pixelY;
+		if (this.projectData.currentlySelectedPin === 0) {
+			// update animation data
+			this.animationData.originX = pixelX;
+			this.animationData.originY = pixelY;
+		} else {
+			console.log('current pin id = ' + this.projectData.currentlySelectedPin);
+			const newPinData: IFramePinData = {
+				id: this.projectData.currentlySelectedPin,
+				x: pixelX,
+				y: pixelY
+			};
+
+			this.animationData.frames[this.projectData.currentFrame][
+				this.projectData.currentlySelectedPin
+			] = newPinData;
+		}
 		// update canvas data
-		this.canvasData.widthRatio = ratioWidth;
-		this.canvasData.heightRatio = ratioHeight;
+		this.projectData.widthRatio = ratioWidth;
+		this.projectData.heightRatio = ratioHeight;
 		// update origin number display
 		this.orginInfo.innerText = 'Origin X: ' + this.animationData.originX + ' Y: ' + this.animationData.originY;
 	};

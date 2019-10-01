@@ -1,5 +1,6 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { ICanvasData } from './Interfaces/ICanvasData';
+import { IProjectData } from './Interfaces/IProjectData';
+import { IFramePinData } from './Interfaces/IFramePinData';
 
 export class FrameHandler {
 	private start: number = 0;
@@ -7,7 +8,7 @@ export class FrameHandler {
 	private frameNumberDiv: HTMLElement;
 
 	private animationData: IAnimationData;
-	private canvasData: ICanvasData;
+	private canvasData: IProjectData;
 
 	private filenames: string[] = [];
 	private currentFrame: number = 0;
@@ -18,13 +19,16 @@ export class FrameHandler {
 
 	private imageElement: HTMLImageElement;
 
+	private projectData: IProjectData;
+
 	constructor(
 		animationData: IAnimationData,
-		canvasData: ICanvasData,
+		canvasData: IProjectData,
 		htmlCanvasElement: HTMLCanvasElement,
 		canvasContext: CanvasRenderingContext2D,
 		frameNumberDiv: HTMLElement,
-		imageElement: HTMLImageElement
+		imageElement: HTMLImageElement,
+		projectData: IProjectData
 	) {
 		this.animationData = animationData;
 		this.canvasData = canvasData;
@@ -33,6 +37,7 @@ export class FrameHandler {
 		this.frameNumberDiv = frameNumberDiv;
 		window.requestAnimationFrame(this.windowAnimationUpdate);
 		this.imageElement = imageElement;
+		this.projectData = projectData;
 	}
 
 	public GetCurrentFrame(): number {
@@ -57,6 +62,7 @@ export class FrameHandler {
 	public GoToFrame(frame: number) {
 		this.currentFrame = frame;
 		this.RefreshImage();
+		this.projectData.currentFrame = this.currentFrame;
 	}
 
 	public TogglePlayingAnimation() {
@@ -88,19 +94,35 @@ export class FrameHandler {
 				this.htmlCanvasElement.height
 			);
 			// draw origin +
+			this.canvasContext.strokeStyle = '#000000';
 			const originCursorSize: number = 500;
-			const originX = this.animationData.originX * this.canvasData.widthRatio;
-			const originY = this.animationData.originY * this.canvasData.heightRatio;
-			this.canvasContext.beginPath();
-			this.canvasContext.moveTo(originX, originY - originCursorSize);
-			this.canvasContext.lineTo(originX, originY + originCursorSize);
-			this.canvasContext.moveTo(originX - originCursorSize, originY);
-			this.canvasContext.lineTo(originX + originCursorSize, originY);
-			this.canvasContext.stroke();
+			const originX = this.animationData.originX;
+			const originY = this.animationData.originY;
+			this.DrawCrossHair(500, this.canvasContext, originX, originY);
+			// frame number update
 			this.frameNumberDiv.className = 'instruction';
 			this.frameNumberDiv.innerText =
 				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
+			// draw pins
+			for (let i = 0; i < 10; i++) {
+				this.canvasContext.strokeStyle = '#FF0000';
+				let currentSelectedPinData: IFramePinData = this.animationData.frames[this.projectData.currentFrame][i];
+				if (currentSelectedPinData !== null && currentSelectedPinData !== undefined) {
+					this.DrawCrossHair(50, this.canvasContext, currentSelectedPinData.x, currentSelectedPinData.y);
+				}
+			}
 		}
+	}
+
+	private DrawCrossHair(size: number, canvasContext: CanvasRenderingContext2D, x: number, y: number) {
+		x *= this.canvasData.widthRatio;
+		y *= this.canvasData.heightRatio;
+		canvasContext.beginPath();
+		canvasContext.moveTo(x, y - size);
+		canvasContext.lineTo(x, y + size);
+		canvasContext.moveTo(x - size, y);
+		canvasContext.lineTo(x + size, y);
+		canvasContext.stroke();
 	}
 
 	private windowAnimationUpdate = (timestamp: number) => {

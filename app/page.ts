@@ -4,7 +4,7 @@ import { CanvasHandler } from './canvas_handler';
 import { FileHandler } from './file_handler';
 import { FrameHandler } from './frame_handler';
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { ICanvasData } from './Interfaces/ICanvasData';
+import { IProjectData } from './Interfaces/IProjectData';
 import { IFrame } from './Interfaces/IFrame';
 import { PinHandler } from './pin_handler';
 
@@ -27,7 +27,7 @@ export class Page {
 	private canvasImage: HTMLCanvasElement;
 	private canvasContext: CanvasRenderingContext2DSettings;
 
-	private canvasData: ICanvasData;
+	private projectData: IProjectData;
 	private filenameInput: HTMLInputElement;
 
 	public Load() {
@@ -40,13 +40,14 @@ export class Page {
 			loop: true,
 			frames: [
 				{
-					filename: '',
-					pinData: []
+					filename: ''
 				}
 			]
 		};
 		// blank slate canvas data
-		this.canvasData = {
+		this.projectData = {
+			currentFrame: 0,
+			currentlySelectedPin: 0,
 			width: 0,
 			height: 0,
 			widthRatio: 0,
@@ -59,13 +60,17 @@ export class Page {
 
 		this.pinHandler = new PinHandler(
 			document.getElementById('addpin') as HTMLElement,
-			document.getElementById('pinSettings') as HTMLElement
+			document.getElementById('pinSettings') as HTMLElement,
+			document.getElementById('pinContainer') as HTMLElement,
+			document.getElementById('originPin') as HTMLElement,
+			this.projectData,
+			this.animationData
 		);
 
 		// setup canvas
 		this.canvasHandler = new CanvasHandler(
 			this.animationData,
-			this.canvasData,
+			this.projectData,
 			canvasElement,
 			imageElement,
 			document.getElementById('originInfo') as HTMLElement
@@ -74,11 +79,12 @@ export class Page {
 		// setup frame handler
 		this.frameHandler = new FrameHandler(
 			this.animationData,
-			this.canvasData,
+			this.projectData,
 			canvasElement,
 			canvasElement.getContext('2d')!,
 			document.getElementById('frameNumber') as HTMLElement,
-			imageElement
+			imageElement,
+			this.projectData
 		);
 
 		// input elements
@@ -148,6 +154,8 @@ export class Page {
 				}
 
 				case 83: {
+					this.pinHandler.UpdateAnimationPinNames();
+
 					const zip = new JSZip();
 					// name of project
 					const name = this.filenameInput.value;
@@ -183,8 +191,7 @@ export class Page {
 
 		for (let i = 0; i < event.dataTransfer!.files.length; i++) {
 			newFrames.push({
-				filename: event.dataTransfer!.files[i].name,
-				pinData: []
+				filename: event.dataTransfer!.files[i].name
 			});
 		}
 

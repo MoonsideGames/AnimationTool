@@ -42,3 +42,26 @@ body {
 	border: 2px solid #6b7578;
 	image-rendering: pixelated;
 }
+
+.pinContainer {
+	display: flex;
+	flex-direction: row;
+}
+.pinButtonContainer {
+	flex: 1;
+	font-size: 12px;
+	border: 2px solid #6b7578;
+	padding: 1px;
+}
+.pinButtonContainerSelected {
+	flex: 1;
+	font-size: 12px;
+	border: 2px solid #0865df;
+	padding: 1px;
+	background-color: rgb(35, 75, 185);
+}
+
+.removeButton {
+	background-color: rgb(158, 15, 34);
+	color: rgb(227, 227, 236);
+}
