@@ -165,8 +165,8 @@ export class Page {
 					const filenames = this.frameHandler.GetFilenames();
 					for (let i = 0; i < filenames.length; i++) {
 						const filedata = filenames[i].split('base64,')[1];
-						const padding = i;
-						zip.file(name + padding.toString() + '.png', filedata, { base64: true });
+						const padding = i.toString().padStart(3, '0');
+						zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
 					}
 					// save zip
 					zip.generateAsync({ type: 'blob' }).then((content) => {
