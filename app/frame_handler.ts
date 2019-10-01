@@ -52,7 +52,14 @@ export class FrameHandler {
 
 	public AdvanceFrames(amount: number) {
 		this.currentFrame += amount;
-		this.currentFrame %= this.filenames.length;
+		if (this.animationData.loop || !this.playingAnimation) {
+			this.currentFrame %= this.filenames.length;
+		} else {
+			if (this.currentFrame > this.filenames.length - 1) {
+				this.playingAnimation = false;
+				this.currentFrame = Math.min(this.currentFrame, this.filenames.length - 1);
+			}
+		}
 		if (this.currentFrame < 0) {
 			this.currentFrame = this.filenames.length - 1;
 		}
@@ -67,6 +74,9 @@ export class FrameHandler {
 
 	public TogglePlayingAnimation() {
 		this.playingAnimation = !this.playingAnimation;
+		if (this.playingAnimation && this.currentFrame == this.filenames.length - 1 && !this.animationData.loop) {
+			this.currentFrame = -1;
+		}
 		console.log('playingAnimation = ', this.playingAnimation);
 	}
 	public StopPlayingAnimation() {
