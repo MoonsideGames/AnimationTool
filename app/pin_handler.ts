@@ -42,10 +42,10 @@ export class PinHandler {
 		const animationPinData: IPin[] = [];
 		for (let i = 1; i < this.allPinContainers.length; i++) {
 			console.log(this.allPinContainers[i].children);
-			let pinName: string = this.allPinContainers[i].getElementsByTagName('input')[0].value;
+			const pinName: string = this.GetPinNameFromDiv(this.allPinContainers[i]);
 			if (pinName !== null && pinName !== undefined) {
 				let newPinData: IPin = {
-					id: parseInt(this.allPinContainers[i].id.split('_')[1]),
+					id: this.GetPinNumberFromID(this.allPinContainers[i].id),
 					name: pinName
 				};
 				animationPinData.push(newPinData);
@@ -57,11 +57,40 @@ export class PinHandler {
 
 	public RemoveAllPins = () => {
 		for (let i = 1; i < this.allPinContainers.length; i++) {
-			const pinID: number = parseInt(this.allPinContainers[i].id.split('_')[1]);
+			const pinID: number = this.GetPinNumberFromID(this.allPinContainers[i].id);
 			this.RemovePinDataForID(pinID);
 			this.allPinContainers[i].remove();
 		}
 		this.ResetPinSelection();
+	};
+
+	public GetAvailablePins = (): number[] => {
+		const availablePins: number[] = [];
+		for (let i = 1; i < this.allPinContainers.length; i++) {
+			const pinID: number = this.GetPinNumberFromID(this.allPinContainers[i].id);
+			availablePins.push(pinID);
+		}
+		console.log('available pins are: ' + availablePins);
+		return availablePins;
+	};
+
+	public GetPinName = (pinID: number): string => {
+		for (let p = 0; p < this.allPinContainers.length; p++) {
+			const pinContainer = this.allPinContainers[p];
+			if (this.GetPinNumberFromID(pinContainer.id) === pinID) {
+				const pinName: string = this.GetPinNameFromDiv(pinContainer);
+				return pinName;
+			}
+		}
+		return 'failed_to_return_pin_name_for_pin_' + pinID.toString();
+	};
+
+	private GetPinNameFromDiv = (pinElement: HTMLElement): string => {
+		return pinElement.getElementsByTagName('input')[0].value;
+	};
+
+	private GetPinNumberFromID = (id: string): number => {
+		return parseInt(id.split('_')[1]);
 	};
 
 	private ResetPinSelection = () => {

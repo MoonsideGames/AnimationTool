@@ -30,12 +30,14 @@ export class Page {
 	private projectData: IProjectData;
 	private filenameInput: HTMLInputElement;
 
+	private message: HTMLElement;
+
 	public Load() {
 		// defining blank slate animation data
 		this.animationData = {
 			pins: [],
-			originX: 0,
-			originY: 0,
+			originX: -1,
+			originY: -1,
 			frameRate: 30,
 			loop: true,
 			frames: [
@@ -54,6 +56,7 @@ export class Page {
 			heightRatio: 0
 		};
 
+		this.message = document.getElementById('message') as HTMLElement;
 		const canvasElement = document.getElementById('canvasImage') as HTMLCanvasElement;
 
 		const imageElement = new Image();
@@ -186,10 +189,33 @@ export class Page {
 	}
 
 	private CheckAllFramesForPinData(): boolean {
-		// for (let frame = 0; frame < this.animationData.frames.length; frame++) {
-		// 	this.animationData.frames[frame][pinIDChecking];
-		// }
-		return true;
+		const availablePins: number[] = this.pinHandler.GetAvailablePins();
+		let passTest: boolean = true;
+		let passPinDataTest: boolean = true;
+		let errorString: string = '';
+		let pinErrorString: string = '';
+		for (let frame = 0; frame < this.animationData.frames.length; frame++) {
+			for (let p = 0; p < availablePins.length; p++) {
+				// loop through available pinIDs
+				const pinIDChecking = availablePins[p];
+				if (this.animationData.frames[frame][pinIDChecking] === undefined) {
+					pinErrorString += 'Frame ' + frame + ', ' + this.pinHandler.GetPinName(pinIDChecking) + '\n';
+					passPinDataTest = false;
+				}
+			}
+		}
+		// construct error string
+		if (this.animationData.originX === -999 || this.animationData.originY === -999) {
+			errorString = 'Missing Origin data. \n';
+			passTest = false;
+		}
+		if (!passPinDataTest) {
+			// warn user if missing pin data
+			errorString += 'Missing the following pin data: \n\n' + pinErrorString;
+			passTest = false;
+		}
+		this.message.innerText = errorString;
+		return passTest;
 	}
 
 	private handleFileSelect = async (event: DragEvent) => {
@@ -222,8 +248,8 @@ export class Page {
 	private ResetProgram = () => {
 		// defining blank slate animation data
 		this.animationData.pins = [];
-		this.animationData.originX = 0;
-		this.animationData.originY = 0;
+		this.animationData.originX = -999;
+		this.animationData.originY = -999;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
 		this.animationData.frames = [ { filename: '' } ];
