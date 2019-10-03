@@ -116,11 +116,13 @@ export class FrameHandler {
 			// draw pins
 			for (let i = 0; i < 10; i++) {
 				this.canvasContext.strokeStyle = '#FF0000';
-				const currentSelectedPinData: IFramePinData = this.animationData.frames[this.projectData.currentFrame][
-					i
-				];
-				if (currentSelectedPinData !== null && currentSelectedPinData !== undefined) {
-					this.DrawCrossHair(50, this.canvasContext, currentSelectedPinData.x, currentSelectedPinData.y);
+				if (this.animationData.frames[this.projectData.currentFrame] !== undefined) {
+					const currentSelectedPinData: IFramePinData = this.animationData.frames[
+						this.projectData.currentFrame
+					][i];
+					if (currentSelectedPinData !== null && currentSelectedPinData !== undefined) {
+						this.DrawCrossHair(50, this.canvasContext, currentSelectedPinData.x, currentSelectedPinData.y);
+					}
 				}
 			}
 		}

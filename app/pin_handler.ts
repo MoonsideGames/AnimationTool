@@ -55,6 +55,20 @@ export class PinHandler {
 		console.log('updated animationPinData to ' + animationPinData);
 	};
 
+	public RemoveAllPins = () => {
+		for (let i = 1; i < this.allPinContainers.length; i++) {
+			const pinID: number = parseInt(this.allPinContainers[i].id.split('_')[1]);
+			this.RemovePinDataForID(pinID);
+			this.allPinContainers[i].remove();
+		}
+		this.ResetPinSelection();
+	};
+
+	private ResetPinSelection = () => {
+		this.DeselectAllPinContainers();
+		this.allPinContainers[0].className = 'pinButtonContainerSelected';
+	};
+
 	private UpdatePinSettingsDiv = () => {
 		// create info window div and append to pincontainer
 		const newDiv = document.createElement('div');
@@ -74,6 +88,21 @@ export class PinHandler {
 		removePinButton.textContent = 'X';
 		removePinButton.className = 'removeButton';
 		removePinButton.addEventListener('click', () => {
+			// get ID number for this div
+			const idNumber = parseInt(newDiv.id.split('_')[1]);
+			let indexToDelete: number = 0;
+			// that id from allPinContainers
+			for (let i = 0; i < this.allPinContainers.length; i++) {
+				if (parseInt(this.allPinContainers[i].id.split('_')[1]) === idNumber) {
+					indexToDelete = i;
+				}
+			}
+			if (indexToDelete !== 0) {
+				this.allPinContainers.splice(indexToDelete, 1);
+			}
+			// remove data associated with that id from all frames
+			this.RemovePinDataForID(idNumber);
+			// remove the div itself
 			newDiv.remove();
 		});
 		// break
@@ -88,6 +117,34 @@ export class PinHandler {
 			this.projectData.currentlySelectedPin = parseInt(newDiv.id.split('_')[1]);
 			console.log('selected pin ' + this.projectData.currentlySelectedPin);
 		});
+	};
+
+	private RemovePinDataForID = (pinID: number) => {
+		// check for matching id in pin list and remove
+
+		let deleted: boolean = false;
+		for (let i = 0; i < this.animationData.pins.length; i++) {
+			console.log('checking if ' + this.animationData.pins[i].id.toString + ' === ' + pinID.toString());
+			if (this.animationData.pins[i].id === pinID) {
+				delete this.animationData.pins[i];
+			}
+			console.log('deleting pinID ' + pinID);
+			deleted = true;
+		}
+
+		if (!deleted) {
+			console.log('failed to find pinID ' + pinID + ' in list of pins');
+		}
+
+		// delete pin data from each frame
+		for (let f = 0; f < this.animationData.frames.length; f++) {
+			if (this.animationData.frames[f][pinID] !== undefined) {
+				delete this.animationData.frames[f][pinID];
+				console.log('deleting pinID ' + pinID + ' data from frame ' + f);
+			} else {
+				console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');
+			}
+		}
 	};
 
 	private DeselectAllPinContainers = () => {

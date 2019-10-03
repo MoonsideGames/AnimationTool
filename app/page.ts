@@ -89,16 +89,17 @@ export class Page {
 
 		// input elements
 		this.frameRateInput = document.getElementById('framerate') as HTMLInputElement;
-		this.frameRateInput.addEventListener('change', this.updateFrameRate);
-		this.frameRateInput.value = this.animationData.frameRate.toString();
+		this.frameRateInput.addEventListener('change', this.UpdateFrameRate);
 		this.loopingInput = document.getElementById('looping') as HTMLInputElement;
-		this.loopingInput.addEventListener('change', this.updateLooping);
+		this.loopingInput.addEventListener('change', this.UpdateLooping);
 		this.filenameInput = document.getElementById('filename') as HTMLInputElement;
 
 		const dropZone = document.getElementById('dropZone') as HTMLElement;
 
 		dropZone.addEventListener('dragover', Page.handleDragOver, false);
 		dropZone.addEventListener('drop', this.handleFileSelect, false);
+
+		this.ResetProgram();
 
 		const keyDown = (event: KeyboardEvent) => {
 			switch (event.keyCode) {
@@ -154,25 +155,29 @@ export class Page {
 				}
 
 				case 83: {
-					this.pinHandler.UpdateAnimationPinNames();
+					if (document.activeElement === document.body) {
+						this.pinHandler.UpdateAnimationPinNames();
 
-					const zip = new JSZip();
-					// name of project
-					const name = this.filenameInput.value;
-					// .anim file
-					zip.file(name + '.anim', JSON.stringify(this.animationData));
-					// pngs
-					const filenames = this.frameHandler.GetFilenames();
-					for (let i = 0; i < filenames.length; i++) {
-						const filedata = filenames[i].split('base64,')[1];
-						const padding = i.toString().padStart(3, '0');
-						zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
+						if (this.CheckAllFramesForPinData()) {
+							const zip = new JSZip();
+							// name of project
+							const name = this.filenameInput.value;
+							// .anim file
+							zip.file(name + '.anim', JSON.stringify(this.animationData));
+							// pngs
+							const filenames = this.frameHandler.GetFilenames();
+							for (let i = 0; i < filenames.length; i++) {
+								const filedata = filenames[i].split('base64,')[1];
+								const padding = i.toString().padStart(3, '0');
+								zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
+							}
+							// save zip
+							zip.generateAsync({ type: 'blob' }).then((content) => {
+								// see FileSaver.js
+								saveAs(content, name + '.zip');
+							});
+						}
 					}
-					// save zip
-					zip.generateAsync({ type: 'blob' }).then((content) => {
-						// see FileSaver.js
-						saveAs(content, name + '.zip');
-					});
 				}
 			}
 		};
@@ -180,7 +185,16 @@ export class Page {
 		document.addEventListener('keydown', keyDown);
 	}
 
+	private CheckAllFramesForPinData(): boolean {
+		// for (let frame = 0; frame < this.animationData.frames.length; frame++) {
+		// 	this.animationData.frames[frame][pinIDChecking];
+		// }
+		return true;
+	}
+
 	private handleFileSelect = async (event: DragEvent) => {
+		this.ResetProgram();
+
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -205,20 +219,38 @@ export class Page {
 		// set framedata initialized to true
 	};
 
-	// private download(filename: string, text: string) {
-	// 	var element = document.createElement('a');
-	// 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-	// 	element.setAttribute('download', filename);
+	private ResetProgram = () => {
+		// defining blank slate animation data
+		this.animationData.pins = [];
+		this.animationData.originX = 0;
+		this.animationData.originY = 0;
+		this.animationData.frameRate = 30;
+		this.animationData.loop = true;
+		this.animationData.frames = [ { filename: '' } ];
 
-	// 	element.style.display = 'none';
-	// 	document.body.appendChild(element);
+		// blank slate canvas data
+		this.projectData.currentFrame = 0;
+		this.projectData.currentlySelectedPin = 0;
+		this.projectData.width = 0;
+		this.projectData.widthRatio = 0;
+		this.projectData.height = 0;
+		this.projectData.heightRatio = 0;
 
-	// 	element.click();
+		// reset input displays
+		this.frameRateInput.value = this.animationData.frameRate.toString();
+		this.loopingInput.checked = this.animationData.loop;
+		this.filenameInput.value = '';
 
-	// 	document.body.removeChild(element);
-	// }
+		// destroy pin divs
+		this.pinHandler.RemoveAllPins();
+		this.projectData.currentlySelectedPin = 0;
+	};
 
-	private updateFrameRate = () => {
+	private UpdateLooping = () => {
+		this.animationData.loop = this.loopingInput.checked;
+	};
+
+	private UpdateFrameRate = () => {
 		this.animationData.frameRate = this.frameRateInput.valueAsNumber;
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
