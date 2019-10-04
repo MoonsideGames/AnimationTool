@@ -103,6 +103,12 @@ export class FrameHandler {
 			const newDiv = document.createElement('div');
 			this.frameViewer.appendChild(newDiv);
 			newDiv.className = 'frame';
+
+			newDiv.addEventListener('click', () => {
+				this.StopPlayingAnimation();
+				this.GoToFrame(i);
+				this.RefreshFrameViewer();
+			});
 		}
 	};
 

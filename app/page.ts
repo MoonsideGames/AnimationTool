@@ -118,12 +118,16 @@ export class Page {
 				case 56:
 				case 57: {
 					// goto frame w 1234567890
+					let targetFrame: number = event.keyCode - 49;
 					if (event.keyCode === 48) {
-						this.frameHandler.GoToFrame(9);
-					} else {
-						this.frameHandler.GoToFrame(event.keyCode - 49);
+						targetFrame = 9;
 					}
+
+					targetFrame %= this.animationData.frames.length;
+
 					this.frameHandler.StopPlayingAnimation();
+					this.frameHandler.GoToFrame(targetFrame);
+					this.frameHandler.RefreshFrameViewer();
 					break;
 				}
 
