@@ -17,32 +17,53 @@ div {
 	text-align: center;
 }
 
+#frameViewer {
+	display: flex;
+	flex-direction: row;
+}
 .frame {
+	flex: 1;
 	width: 32px;
 	height: 32px;
+	max-width: 32px;
 	color: #101e24;
-	width: 50%;
 	border: 2px solid #3f4446;
 	padding: 1px;
 	background-color: rgb(90, 92, 95);
+	display: inline-block;
 }
 .frameActive {
+	flex: 1;
 	width: 32px;
 	height: 32px;
+	max-width: 32px;
 	color: #101e24;
-	width: 50%;
 	border: 2px solid #0865df;
 	padding: 1px;
 	background-color: rgb(35, 75, 185);
+	display: inline-block;
 }
 .frameWarning {
+	flex: 1;
 	width: 32px;
 	height: 32px;
+	max-width: 32px;
 	color: #101e24;
-	width: 50%;
 	border: 2px solid rgb(233, 7, 75);
 	padding: 1px;
 	background-color: rgb(83, 14, 20);
+	display: inline-block;
+}
+.frameActiveWarning {
+	flex: 1;
+	width: 32px;
+	height: 32px;
+	max-width: 32px;
+	color: #101e24;
+	border: 2px solid rgb(233, 7, 75);
+	padding: 1px;
+	background-color: rgb(185, 8, 61);
+	display: inline-block;
 }
 
 .errorMessage {
@@ -79,12 +100,14 @@ body {
 	flex-direction: row;
 }
 .pinButtonContainer {
+	max-width: 10%;
 	flex: 1;
 	font-size: 12px;
 	border: 2px solid #6b7578;
 	padding: 1px;
 }
 .pinButtonContainerSelected {
+	max-width: 10%;
 	flex: 1;
 	font-size: 12px;
 	border: 2px solid #0865df;

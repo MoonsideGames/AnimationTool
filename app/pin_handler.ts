@@ -43,6 +43,7 @@ export class PinHandler {
 		for (let i = 1; i < this.allPinContainers.length; i++) {
 			console.log(this.allPinContainers[i].children);
 			const pinName: string = this.GetPinNameFromDiv(this.allPinContainers[i]);
+			console.log('new pin name = ' + pinName);
 			if (pinName !== null && pinName !== undefined) {
 				let newPinData: IPin = {
 					id: this.GetPinNumberFromID(this.allPinContainers[i].id),
@@ -111,6 +112,9 @@ export class PinHandler {
 		newNameInput.id = 'nameInput_' + this.pins.toString();
 		newDiv.appendChild(newNameInput);
 		newNameInput.value = 'PinName_' + this.pins.toString();
+		newNameInput.addEventListener('focusout', () => {
+			this.UpdateAnimationPinNames();
+		});
 		// button to remove pin
 		const removePinButton = document.createElement('button');
 		newDiv.appendChild(removePinButton);
@@ -133,6 +137,7 @@ export class PinHandler {
 			this.RemovePinDataForID(idNumber);
 			// remove the div itself
 			newDiv.remove();
+			this.UpdateAnimationPinNames();
 		});
 		// break
 		newDiv.appendChild(document.createElement('br'));
@@ -145,7 +150,9 @@ export class PinHandler {
 			newDiv.className = 'pinButtonContainerSelected';
 			this.projectData.currentlySelectedPin = parseInt(newDiv.id.split('_')[1]);
 			console.log('selected pin ' + this.projectData.currentlySelectedPin);
+			this.UpdateAnimationPinNames();
 		});
+		this.UpdateAnimationPinNames();
 	};
 
 	private RemovePinDataForID = (pinID: number) => {

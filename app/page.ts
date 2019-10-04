@@ -87,7 +87,8 @@ export class Page {
 			canvasElement.getContext('2d')!,
 			document.getElementById('frameNumber') as HTMLElement,
 			imageElement,
-			this.projectData
+			this.projectData,
+			document.getElementById('frameViewer') as HTMLElement
 		);
 
 		// input elements
@@ -161,7 +162,7 @@ export class Page {
 					if (document.activeElement === document.body) {
 						this.pinHandler.UpdateAnimationPinNames();
 
-						if (this.CheckAllFramesForPinData()) {
+						if (this.ProjectHasNeccesaryData()) {
 							const zip = new JSZip();
 							// name of project
 							const name = this.filenameInput.value;
@@ -188,34 +189,47 @@ export class Page {
 		document.addEventListener('keydown', keyDown);
 	}
 
-	private CheckAllFramesForPinData(): boolean {
-		const availablePins: number[] = this.pinHandler.GetAvailablePins();
-		let passTest: boolean = true;
-		let passPinDataTest: boolean = true;
+	private ProjectHasNeccesaryData(): boolean {
+		let pass: boolean = true;
 		let errorString: string = '';
-		let pinErrorString: string = '';
-		for (let frame = 0; frame < this.animationData.frames.length; frame++) {
-			for (let p = 0; p < availablePins.length; p++) {
-				// loop through available pinIDs
-				const pinIDChecking = availablePins[p];
-				if (this.animationData.frames[frame][pinIDChecking] === undefined) {
-					pinErrorString += 'Frame ' + frame + ', ' + this.pinHandler.GetPinName(pinIDChecking) + '\n';
-					passPinDataTest = false;
+		this.frameHandler.RefreshFrameViewer();
+		if (this.filenameInput.value === '') {
+			errorString += '- Missing name\n';
+			pass = false;
+		}
+		if (this.animationData.originX === null || this.animationData.originY === null) {
+			errorString += '- Missing origin data\n';
+			pass = false;
+		}
+		// check frames for data errors
+		let pinDataErrorString: string = '';
+		let passPinData: boolean = true;
+		for (let f = 0; f < this.animationData.frames.length; f++) {
+			let errorOnFrame: boolean = false;
+			if (this.animationData.pins !== undefined) {
+				for (let p = 0; p < this.animationData.pins.length; p++) {
+					if (this.animationData.pins[p] !== undefined) {
+						const pinIDtoCheck = this.animationData.pins[p].id;
+						console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
+						if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
+							if (!errorOnFrame) {
+								pinDataErrorString += '  Frame ' + f + ' :\n';
+							}
+							pinDataErrorString += '      Pin: ' + this.animationData.pins[p].name + '\n';
+							passPinData = false;
+						}
+					}
 				}
 			}
 		}
-		// construct error string
-		if (this.animationData.originX === -999 || this.animationData.originY === -999) {
-			errorString = 'Missing Origin data. \n';
-			passTest = false;
+		if (!passPinData) {
+			errorString += '- Missing pin data on some frames: \n' + pinDataErrorString;
+			pass = false;
 		}
-		if (!passPinDataTest) {
-			// warn user if missing pin data
-			errorString += 'Missing the following pin data: \n\n' + pinErrorString;
-			passTest = false;
+		if (!pass) {
+			alert(errorString);
 		}
-		this.message.innerText = errorString;
-		return passTest;
+		return pass;
 	}
 
 	private handleFileSelect = async (event: DragEvent) => {
@@ -242,14 +256,14 @@ export class Page {
 
 		this.canvasHandler.ResizeCanvas();
 
-		// set framedata initialized to true
+		this.frameHandler.ConstructFrameUI();
 	};
 
 	private ResetProgram = () => {
 		// defining blank slate animation data
 		this.animationData.pins = [];
-		this.animationData.originX = -999;
-		this.animationData.originY = -999;
+		this.animationData.originX = null;
+		this.animationData.originY = null;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
 		this.animationData.frames = [ { filename: '' } ];
@@ -281,10 +295,5 @@ export class Page {
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
 		console.log('new frame rate = ' + this.animationData.frameRate);
-	};
-
-	private updateLooping = () => {
-		this.animationData.loop = this.loopingInput.checked;
-		console.log('new looping value = ' + this.loopingInput.checked);
 	};
 }

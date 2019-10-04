@@ -20,6 +20,7 @@ export class FrameHandler {
 	private imageElement: HTMLImageElement;
 
 	private projectData: IProjectData;
+	private frameViewer: HTMLElement;
 
 	constructor(
 		animationData: IAnimationData,
@@ -28,7 +29,8 @@ export class FrameHandler {
 		canvasContext: CanvasRenderingContext2D,
 		frameNumberDiv: HTMLElement,
 		imageElement: HTMLImageElement,
-		projectData: IProjectData
+		projectData: IProjectData,
+		frameViewer: HTMLElement
 	) {
 		this.animationData = animationData;
 		this.canvasData = canvasData;
@@ -38,6 +40,7 @@ export class FrameHandler {
 		window.requestAnimationFrame(this.windowAnimationUpdate);
 		this.imageElement = imageElement;
 		this.projectData = projectData;
+		this.frameViewer = frameViewer;
 	}
 
 	public GetCurrentFrame(): number {
@@ -64,6 +67,7 @@ export class FrameHandler {
 			this.currentFrame = this.filenames.length - 1;
 		}
 		this.GoToFrame(this.currentFrame);
+		this.RefreshFrameViewer();
 	}
 
 	public GoToFrame(frame: number) {
@@ -87,6 +91,54 @@ export class FrameHandler {
 		return this.filenames;
 	}
 
+	public ConstructFrameUI = () => {
+		// clear frames
+		let child = this.frameViewer.lastElementChild;
+		while (child) {
+			this.frameViewer.removeChild(child);
+			child = this.frameViewer.lastElementChild;
+		}
+		// construct
+		for (let i = 0; i < this.animationData.frames.length; i++) {
+			const newDiv = document.createElement('div');
+			this.frameViewer.appendChild(newDiv);
+			newDiv.className = 'frame';
+		}
+	};
+
+	public RefreshFrameViewer() {
+		// set all frames to inactive
+		for (let i = 0; i < this.frameViewer.children.length; i++) {
+			this.frameViewer.children[i].className = 'frame';
+		}
+		// set current frame to active
+		if (this.frameViewer.children[this.projectData.currentFrame] !== undefined) {
+			this.frameViewer.children[this.projectData.currentFrame].className = 'frameActive';
+		}
+
+		// check frames for data errors
+		for (let f = 0; f < this.animationData.frames.length; f++) {
+			if (this.animationData.pins !== undefined) {
+				for (let p = 0; p < this.animationData.pins.length; p++) {
+					if (this.animationData.pins[p] !== undefined) {
+						const pinIDtoCheck = this.animationData.pins[p].id;
+						console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
+						if (this.frameViewer.children[f] !== undefined) {
+							if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
+								if (f === this.projectData.currentFrame) {
+									this.frameViewer.children[f].className = 'frameActiveWarning';
+								} else {
+									this.frameViewer.children[f].className = 'frameWarning';
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	private RefreshImage() {
 		if (this.filenames.length === 0) {
 			this.frameNumberDiv.className = 'warning';
@@ -105,12 +157,13 @@ export class FrameHandler {
 			);
 			// draw origin +
 			this.canvasContext.strokeStyle = '#000000';
-			const originCursorSize: number = 500;
 			const originX = this.animationData.originX;
 			const originY = this.animationData.originY;
-			this.DrawCrossHair(500, this.canvasContext, originX, originY);
+			if (originX !== null && originY !== null) {
+				this.DrawCrossHair(500, this.canvasContext, originX, originY);
+			}
 			// frame number update
-			this.frameNumberDiv.className = 'instruction';
+			this.frameNumberDiv.className = '';
 			this.frameNumberDiv.innerText =
 				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
 			// draw pins
