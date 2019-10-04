@@ -115,27 +115,25 @@ export class FrameHandler {
 	public RefreshFrameViewer() {
 		// set all frames to inactive
 		for (let i = 0; i < this.frameViewer.children.length; i++) {
-			this.frameViewer.children[i].className = 'frame';
+			this.frameViewer.children[i].classList.remove('selected', 'warning');
 		}
 		// set current frame to active
 		if (this.frameViewer.children[this.projectData.currentFrame] !== undefined) {
-			this.frameViewer.children[this.projectData.currentFrame].className = 'frameActive';
+			this.frameViewer.children[this.projectData.currentFrame].classList.add('selected');
 		}
 
 		// check frames for data errors
 		for (let f = 0; f < this.animationData.frames.length; f++) {
+			// this.frameViewer.children[f].classList.add('warning');
+
 			if (this.animationData.pins !== undefined) {
 				for (let p = 0; p < this.animationData.pins.length; p++) {
 					if (this.animationData.pins[p] !== undefined) {
 						const pinIDtoCheck = this.animationData.pins[p].id;
-						console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
+						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.frameViewer.children[f] !== undefined) {
 							if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
-								if (f === this.projectData.currentFrame) {
-									this.frameViewer.children[f].className = 'frameActiveWarning';
-								} else {
-									this.frameViewer.children[f].className = 'frameWarning';
-								}
+								this.frameViewer.children[f].classList.add('warning');
 								break;
 							}
 						}
@@ -147,8 +145,8 @@ export class FrameHandler {
 
 	private RefreshImage() {
 		if (this.filenames.length === 0) {
-			this.frameNumberDiv.className = 'warning';
-			this.frameNumberDiv.innerText = 'No images uploaded yet';
+			// this.frameNumberDiv.className = 'warning';
+			// this.frameNumberDiv.innerText = 'No images uploaded yet';
 		} else {
 			this.canvasContext.clearRect(0, 0, this.htmlCanvasElement.width, this.htmlCanvasElement.height);
 			this.canvasContext.imageSmoothingEnabled = false;
