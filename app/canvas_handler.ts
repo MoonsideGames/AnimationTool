@@ -9,6 +9,7 @@ export class CanvasHandler {
 	private animationData: IAnimationData;
 	private projectData: IProjectData;
 	private orginInfo: HTMLElement;
+	private canvasClickEvent: Event;
 
 	private targetImageSize: number = 256;
 
@@ -17,13 +18,15 @@ export class CanvasHandler {
 		canvasData: IProjectData,
 		canvasImage: HTMLCanvasElement,
 		imageElement: HTMLImageElement,
-		originInfo: HTMLElement
+		originInfo: HTMLElement,
+		canvasClickEvent: Event
 	) {
 		this.animationData = animationData;
 		this.projectData = canvasData;
 		this.canvasImage = canvasImage;
 		this.imageElement = imageElement;
 		this.orginInfo = originInfo;
+		this.canvasClickEvent = canvasClickEvent;
 
 		this.ResizeCanvas();
 		this.UpdateCanvasDataSize();
@@ -51,6 +54,7 @@ export class CanvasHandler {
 	}
 
 	private mouseDown = (event: MouseEvent) => {
+		document.dispatchEvent(this.canvasClickEvent);
 		// get position
 		const ratioWidth: number = this.canvasImage.width / this.imageElement.width;
 		const ratioHeight: number = this.canvasImage.height / this.imageElement.height;

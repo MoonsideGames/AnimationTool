@@ -98,15 +98,15 @@ body {
 	border: 2px solid $main-border-color;
 	padding: 1px;
 
-	.warning {
+	&.warning {
 		border: 2px solid $warning-border-color;
 		background-color: $warning-bg-color;
 	}
 
-	.selected {
+	&.selected {
 		border: 2px solid $selected-border-color;
 		background-color: $selected-bg-color;
-		.warning {
+		&.warning {
 			border: 2px solid $warning-selected-border-color;
 			background-color: $warning-selected-bg-color;
 		}

@@ -32,16 +32,48 @@ export class PinHandler {
 		this.originPin.id = 'pinID_0';
 		this.originPin.addEventListener('click', () => {
 			this.projectData.currentlySelectedPin = 0;
-			this.DeselectAllPinContainers();
-			this.originPin.classList.add('selected');
-			this.CheckOriginDataExists();
+			this.UpdatePinBoxStatus();
 		});
 		// put origin into pincontainer array
 		this.allPinContainers = [ originPin ];
 
 		// this.UpdatePinSettingsDiv();
 		this.addPinButton.addEventListener('click', this.AddPinButtonPressed);
+
+		this.pinContainer.addEventListener('canvasClick', () => {
+			this.UpdatePinBoxStatus();
+			console.log('pin_handler read canvas click');
+		});
 	}
+
+	public UpdatePinBoxStatus = () => {
+		for (let i = 0; i < this.allPinContainers.length; i++) {
+			const pinDiv = this.allPinContainers[i];
+			pinDiv.classList.remove('selected', 'warning');
+			if (i > 0) {
+				if (this.GetPinNumberFromID(this.allPinContainers[i].id) === this.projectData.currentlySelectedPin) {
+					this.allPinContainers[i].classList.add('selected');
+				}
+				// check frames for missing pin info
+				const pinNumber = this.GetPinNumberFromID(pinDiv.id);
+				for (let f = 0; f < this.animationData.frames.length; f++) {
+					if (this.animationData.frames[f] !== undefined) {
+						if (this.animationData.frames[f][pinNumber] === undefined) {
+							pinDiv.classList.add('warning');
+							console.log('added warning');
+							break;
+						}
+					}
+				}
+			}
+		}
+		if (this.animationData.originX === null || this.animationData.originY === null) {
+			this.originPin.classList.add('warning');
+		}
+		if (this.projectData.currentlySelectedPin === 0) {
+			this.originPin.classList.add('selected');
+		}
+	};
 
 	public UpdateAnimationPinNames = () => {
 		const animationPinData: IPin[] = [];
@@ -67,7 +99,8 @@ export class PinHandler {
 			this.RemovePinDataForID(pinID);
 			this.allPinContainers[i].remove();
 		}
-		this.ResetPinSelection();
+		this.allPinContainers.splice(1, this.allPinContainers.length - 1);
+		this.UpdatePinBoxStatus();
 		this.UpdateAnimationPinNames();
 	};
 
@@ -98,17 +131,6 @@ export class PinHandler {
 
 	private GetPinNumberFromID = (id: string): number => {
 		return parseInt(id.split('_')[1]);
-	};
-
-	private ResetPinSelection = () => {
-		this.DeselectAllPinContainers();
-	};
-
-	private CheckOriginDataExists = () => {
-		this.originPin.classList.remove('selected');
-		if (this.animationData.originX === null || this.animationData.originY === null) {
-			this.originPin.classList.add('warning');
-		}
 	};
 
 	private UpdatePinSettingsDiv = () => {
@@ -164,11 +186,9 @@ export class PinHandler {
 	};
 
 	private SelectPin = (pinDiv: HTMLElement) => {
-		this.CheckOriginDataExists();
-		this.DeselectAllPinContainers();
 		this.projectData.currentlySelectedPin = parseInt(pinDiv.id.split('_')[1]);
-		pinDiv.classList.add('selected');
 		console.log('selected pin ' + this.projectData.currentlySelectedPin);
+		this.UpdatePinBoxStatus();
 		this.UpdateAnimationPinNames();
 	};
 
@@ -196,30 +216,6 @@ export class PinHandler {
 				console.log('deleting pinID ' + pinID + ' data from frame ' + f);
 			} else {
 				console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');
-			}
-		}
-	};
-
-	private DeselectAllPinContainers = () => {
-		for (let i = 0; i < this.allPinContainers.length; i++) {
-			const pinDiv = this.allPinContainers[i];
-			pinDiv.classList.remove('selected', 'warning');
-			console.log('in i');
-			if (i > 0) {
-				console.log('i>0');
-				// check frames for missing pin info
-				const pinNumber = this.GetPinNumberFromID(pinDiv.id);
-
-				for (let f = 0; f < this.animationData.frames.length; f++) {
-					console.log('f = ' + f + ' this.animationData.frames.length = ' + this.animationData.frames.length);
-					if (this.animationData.frames[f] !== undefined) {
-						if (this.animationData.frames[f][pinNumber] === undefined) {
-							pinDiv.classList.add('warning');
-							console.log('added warning');
-							break;
-						}
-					}
-				}
 			}
 		}
 	};
