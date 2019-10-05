@@ -98,19 +98,19 @@ body {
 	border: 2px solid $main-border-color;
 	padding: 1px;
 
-	// .warning {
-	// 	border: 2px solid $warning-border-color;
-	// 	background-color: $warning-bg-color;
-	// }
+	.warning {
+		border: 2px solid $warning-border-color;
+		background-color: $warning-bg-color;
+	}
 
-	// .selected {
-	// 	border: 2px solid $selected-border-color;
-	// 	background-color: $selected-bg-color;
-	// 	.warning {
-	// 		border: 2px solid $warning-selected-border-color;
-	// 		background-color: $warning-selected-bg-color;
-	// 	}
-	// }
+	.selected {
+		border: 2px solid $selected-border-color;
+		background-color: $selected-bg-color;
+		.warning {
+			border: 2px solid $warning-selected-border-color;
+			background-color: $warning-selected-bg-color;
+		}
+	}
 }
 
 .removeButton {

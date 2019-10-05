@@ -10,6 +10,7 @@ export class PinHandler {
 	private allPinContainers: HTMLElement[];
 	private projectData: IProjectData;
 	private animationData: IAnimationData;
+	private originPin: HTMLElement;
 
 	constructor(
 		addPinButton: HTMLElement,
@@ -25,10 +26,15 @@ export class PinHandler {
 		this.projectData = projectData;
 		this.animationData = animationData;
 
+		this.originPin = originPin;
+		this.originPin.classList.add('pinButtonContainer');
 		// add origin click behaviour
-		originPin.id = 'pinID_0';
-		originPin.addEventListener('click', () => {
-			this.SelectPin(originPin);
+		this.originPin.id = 'pinID_0';
+		this.originPin.addEventListener('click', () => {
+			this.projectData.currentlySelectedPin = 0;
+			this.DeselectAllPinContainers();
+			this.originPin.classList.add('selected');
+			this.CheckOriginDataExists();
 		});
 		// put origin into pincontainer array
 		this.allPinContainers = [ originPin ];
@@ -96,20 +102,12 @@ export class PinHandler {
 
 	private ResetPinSelection = () => {
 		this.DeselectAllPinContainers();
-		this.allPinContainers[0].className = 'pinButtonContainerSelected';
 	};
 
 	private CheckOriginDataExists = () => {
-		this.allPinContainers[0].className = 'pinButtonContainer';
-		if (this.projectData.currentlySelectedPin === 0) {
-			this.allPinContainers[0].className = 'pinButtonContainerSelected';
-		}
+		this.originPin.classList.remove('selected');
 		if (this.animationData.originX === null || this.animationData.originY === null) {
-			if (this.projectData.currentlySelectedPin === 0) {
-				this.allPinContainers[0].className = 'pinButtonContainerErrorSelected';
-			} else {
-				this.allPinContainers[0].className = 'pinButtonContainerError';
-			}
+			this.originPin.classList.add('warning');
 		}
 	};
 
@@ -169,11 +167,7 @@ export class PinHandler {
 		this.CheckOriginDataExists();
 		this.DeselectAllPinContainers();
 		this.projectData.currentlySelectedPin = parseInt(pinDiv.id.split('_')[1]);
-		if (pinDiv.className === 'pinButtonContainerError') {
-			pinDiv.className = 'pinButtonContainerErrorSelected';
-		} else {
-			pinDiv.className = 'pinButtonContainerSelected';
-		}
+		pinDiv.classList.add('selected');
 		console.log('selected pin ' + this.projectData.currentlySelectedPin);
 		this.UpdateAnimationPinNames();
 	};
@@ -209,14 +203,19 @@ export class PinHandler {
 	private DeselectAllPinContainers = () => {
 		for (let i = 0; i < this.allPinContainers.length; i++) {
 			const pinDiv = this.allPinContainers[i];
-			pinDiv.className = 'pinButtonContainer';
+			pinDiv.classList.remove('selected', 'warning');
+			console.log('in i');
 			if (i > 0) {
+				console.log('i>0');
 				// check frames for missing pin info
 				const pinNumber = this.GetPinNumberFromID(pinDiv.id);
-				for (let f = 0; this.animationData.frames.length; f++) {
+
+				for (let f = 0; f < this.animationData.frames.length; f++) {
+					console.log('f = ' + f + ' this.animationData.frames.length = ' + this.animationData.frames.length);
 					if (this.animationData.frames[f] !== undefined) {
 						if (this.animationData.frames[f][pinNumber] === undefined) {
-							pinDiv.className = 'pinButtonContainerError';
+							pinDiv.classList.add('warning');
+							console.log('added warning');
 							break;
 						}
 					}

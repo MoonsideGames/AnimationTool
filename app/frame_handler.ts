@@ -67,13 +67,13 @@ export class FrameHandler {
 			this.currentFrame = this.filenames.length - 1;
 		}
 		this.GoToFrame(this.currentFrame);
-		this.RefreshFrameViewer();
 	}
 
 	public GoToFrame(frame: number) {
 		this.currentFrame = frame;
 		this.RefreshImage();
 		this.projectData.currentFrame = this.currentFrame;
+		this.RefreshFrameViewer();
 	}
 
 	public TogglePlayingAnimation() {
@@ -107,7 +107,6 @@ export class FrameHandler {
 			newDiv.addEventListener('click', () => {
 				this.StopPlayingAnimation();
 				this.GoToFrame(i);
-				this.RefreshFrameViewer();
 			});
 		}
 	};
