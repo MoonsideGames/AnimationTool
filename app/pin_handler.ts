@@ -17,6 +17,7 @@ export class PinHandler {
 		pinSettingsDiv: HTMLElement,
 		pinContainer: HTMLElement,
 		originPin: HTMLElement,
+		canvasElement: HTMLElement,
 		projectData: IProjectData,
 		animationData: IAnimationData
 	) {
@@ -40,7 +41,7 @@ export class PinHandler {
 		// this.UpdatePinSettingsDiv();
 		this.addPinButton.addEventListener('click', this.AddPinButtonPressed);
 
-		this.pinContainer.addEventListener('canvasClick', () => {
+		canvasElement.addEventListener('mouseup', () => {
 			this.UpdatePinBoxStatus();
 			console.log('pin_handler read canvas click');
 		});
@@ -183,6 +184,7 @@ export class PinHandler {
 			this.SelectPin(newDiv);
 		});
 		this.UpdateAnimationPinNames();
+		this.UpdatePinBoxStatus();
 	};
 
 	private SelectPin = (pinDiv: HTMLElement) => {

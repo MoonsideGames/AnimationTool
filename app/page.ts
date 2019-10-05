@@ -56,8 +56,6 @@ export class Page {
 			heightRatio: 0
 		};
 
-		const canvasClickEvent: Event = new Event('canvasClick');
-
 		this.message = document.getElementById('message') as HTMLElement;
 		const canvasElement = document.getElementById('canvasImage') as HTMLCanvasElement;
 
@@ -68,6 +66,7 @@ export class Page {
 			document.getElementById('pinSettings') as HTMLElement,
 			document.getElementById('pinContainer') as HTMLElement,
 			document.getElementById('originPin') as HTMLElement,
+			canvasElement,
 			this.projectData,
 			this.animationData
 		);
@@ -78,8 +77,7 @@ export class Page {
 			this.projectData,
 			canvasElement,
 			imageElement,
-			document.getElementById('originInfo') as HTMLElement,
-			canvasClickEvent
+			document.getElementById('originInfo') as HTMLElement
 		);
 
 		// setup frame handler
