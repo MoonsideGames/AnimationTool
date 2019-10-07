@@ -32,60 +32,63 @@ export class Page {
 
 	private message: HTMLElement;
 
+	private addPinButton: HTMLElement;
+
 	public Load() {
 		// defining blank slate animation data
 		this.animationData = {
-			pins: [],
-			originX: -1,
-			originY: -1,
 			frameRate: 30,
-			loop: true,
 			frames: [
 				{
 					filename: ''
 				}
-			]
+			],
+			loop: true,
+			originX: -1,
+			originY: -1,
+			pins: []
 		};
 		// blank slate canvas data
 		this.projectData = {
 			currentFrame: 0,
 			currentlySelectedPin: 0,
-			width: 0,
 			height: 0,
-			widthRatio: 0,
-			heightRatio: 0
+			heightRatio: 0,
+			width: 0,
+			widthRatio: 0
 		};
 
 		this.message = document.getElementById('message') as HTMLElement;
-		const canvasElement = document.getElementById('canvasImage') as HTMLCanvasElement;
+		const canvasImage = document.getElementById('canvasImage') as HTMLCanvasElement;
 
 		const imageElement = new Image();
 
 		this.pinHandler = new PinHandler(
-			document.getElementById('addpin') as HTMLElement,
 			document.getElementById('pinSettings') as HTMLElement,
 			document.getElementById('pinContainer') as HTMLElement,
 			document.getElementById('originPin') as HTMLElement,
-			canvasElement,
 			this.projectData,
 			this.animationData
 		);
+		this.addPinButton = document.getElementById('addpin') as HTMLElement;
+		this.addPinButton.addEventListener('click', this.AddPinButtonPressed);
 
 		// setup canvas
 		this.canvasHandler = new CanvasHandler(
 			this.animationData,
 			this.projectData,
-			canvasElement,
+			canvasImage,
 			imageElement,
 			document.getElementById('originInfo') as HTMLElement
 		);
+		this.canvasImage.addEventListener('mousedown', this.CanvasMouseDown);
 
 		// setup frame handler
 		this.frameHandler = new FrameHandler(
 			this.animationData,
 			this.projectData,
-			canvasElement,
-			canvasElement.getContext('2d')!,
+			canvasImage,
+			canvasImage.getContext('2d')!,
 			document.getElementById('frameNumber') as HTMLElement,
 			imageElement,
 			this.projectData,
@@ -135,7 +138,6 @@ export class Page {
 				case 39:
 				case 190: {
 					// right_arrow, carrot
-					console.log('next frame action');
 					this.frameHandler.AdvanceFrames(1);
 					this.frameHandler.StopPlayingAnimation();
 					break;
@@ -144,7 +146,6 @@ export class Page {
 				case 37:
 				case 188: {
 					// left arrow, carrot
-					console.log('previous frame action');
 					this.frameHandler.AdvanceFrames(-1);
 					this.frameHandler.StopPlayingAnimation();
 					break;
@@ -210,12 +211,12 @@ export class Page {
 		let pinDataErrorString: string = '';
 		let passPinData: boolean = true;
 		for (let f = 0; f < this.animationData.frames.length; f++) {
-			let errorOnFrame: boolean = false;
+			const errorOnFrame: boolean = false;
 			if (this.animationData.pins !== undefined) {
 				for (let p = 0; p < this.animationData.pins.length; p++) {
 					if (this.animationData.pins[p] !== undefined) {
 						const pinIDtoCheck = this.animationData.pins[p].id;
-						console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
+						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
 							if (!errorOnFrame) {
 								pinDataErrorString += '  Frame ' + f + ' :\n';
@@ -236,6 +237,16 @@ export class Page {
 		}
 		return pass;
 	}
+
+	private CanvasMouseDown = (event: MouseEvent) => {
+		this.canvasHandler.CanvasMouseDown(event.offsetX, event.offsetY);
+		this.pinHandler.UpdatePinBoxStatus();
+	};
+
+	private AddPinButtonPressed = () => {
+		this.pinHandler.AddNewPin();
+		this.pinHandler.pins += 1;
+	};
 
 	private handleFileSelect = async (event: DragEvent) => {
 		this.ResetProgram();
@@ -299,6 +310,5 @@ export class Page {
 		this.animationData.frameRate = this.frameRateInput.valueAsNumber;
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
-		console.log('new frame rate = ' + this.animationData.frameRate);
 	};
 }

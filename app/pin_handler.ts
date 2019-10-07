@@ -1,11 +1,10 @@
-import { IProjectData } from './Interfaces/IProjectData';
-import { IPin } from './Interfaces/IPin';
 import { IAnimationData } from './Interfaces/IAnimationData';
+import { IPin } from './Interfaces/IPin';
+import { IProjectData } from './Interfaces/IProjectData';
 
 export class PinHandler {
-	private addPinButton: HTMLElement;
+	public pins: number = 1;
 	private pinSettingsDiv: HTMLElement;
-	private pins: number = 1;
 	private pinContainer: HTMLElement;
 	private allPinContainers: HTMLElement[];
 	private projectData: IProjectData;
@@ -13,15 +12,12 @@ export class PinHandler {
 	private originPin: HTMLElement;
 
 	constructor(
-		addPinButton: HTMLElement,
 		pinSettingsDiv: HTMLElement,
 		pinContainer: HTMLElement,
 		originPin: HTMLElement,
-		canvasElement: HTMLElement,
 		projectData: IProjectData,
 		animationData: IAnimationData
 	) {
-		this.addPinButton = addPinButton;
 		this.pinSettingsDiv = pinSettingsDiv;
 		this.pinContainer = pinContainer;
 		this.projectData = projectData;
@@ -37,14 +33,6 @@ export class PinHandler {
 		});
 		// put origin into pincontainer array
 		this.allPinContainers = [ originPin ];
-
-		// this.UpdatePinSettingsDiv();
-		this.addPinButton.addEventListener('click', this.AddPinButtonPressed);
-
-		canvasElement.addEventListener('mouseup', () => {
-			this.UpdatePinBoxStatus();
-			console.log('pin_handler read canvas click');
-		});
 	}
 
 	public UpdatePinBoxStatus = () => {
@@ -61,7 +49,7 @@ export class PinHandler {
 					if (this.animationData.frames[f] !== undefined) {
 						if (this.animationData.frames[f][pinNumber] === undefined) {
 							pinDiv.classList.add('warning');
-							console.log('added warning');
+							// console.log('added warning');
 							break;
 						}
 					}
@@ -79,11 +67,10 @@ export class PinHandler {
 	public UpdateAnimationPinNames = () => {
 		const animationPinData: IPin[] = [];
 		for (let i = 1; i < this.allPinContainers.length; i++) {
-			console.log(this.allPinContainers[i].children);
 			const pinName: string = this.GetPinNameFromDiv(this.allPinContainers[i]);
-			console.log('new pin name = ' + pinName);
+			// console.log('new pin name = ' + pinName);
 			if (pinName !== null && pinName !== undefined) {
-				let newPinData: IPin = {
+				const newPinData: IPin = {
 					id: this.GetPinNumberFromID(this.allPinContainers[i].id),
 					name: pinName
 				};
@@ -91,7 +78,7 @@ export class PinHandler {
 			}
 		}
 		this.animationData.pins = animationPinData;
-		console.log('updated animationPinData to ' + animationPinData);
+		// console.log('updated animationPinData to ' + animationPinData);
 	};
 
 	public RemoveAllPins = () => {
@@ -111,7 +98,7 @@ export class PinHandler {
 			const pinID: number = this.GetPinNumberFromID(this.allPinContainers[i].id);
 			availablePins.push(pinID);
 		}
-		console.log('available pins are: ' + availablePins);
+		// console.log('available pins are: ' + availablePins);
 		return availablePins;
 	};
 
@@ -126,15 +113,7 @@ export class PinHandler {
 		return 'failed_to_return_pin_name_for_pin_' + pinID.toString();
 	};
 
-	private GetPinNameFromDiv = (pinElement: HTMLElement): string => {
-		return pinElement.getElementsByTagName('input')[0].value;
-	};
-
-	private GetPinNumberFromID = (id: string): number => {
-		return parseInt(id.split('_')[1]);
-	};
-
-	private UpdatePinSettingsDiv = () => {
+	public AddNewPin = () => {
 		// create info window div and append to pincontainer
 		const newDiv = document.createElement('div');
 		this.allPinContainers.push(newDiv);
@@ -157,11 +136,11 @@ export class PinHandler {
 		removePinButton.className = 'removeButton';
 		removePinButton.addEventListener('click', () => {
 			// get ID number for this div
-			const idNumber = parseInt(newDiv.id.split('_')[1]);
+			const idNumber = this.GetPinNumberFromID(newDiv.id);
 			let indexToDelete: number = 0;
 			// that id from allPinContainers
 			for (let i = 0; i < this.allPinContainers.length; i++) {
-				if (parseInt(this.allPinContainers[i].id.split('_')[1]) === idNumber) {
+				if (this.GetPinNumberFromID(this.allPinContainers[i].id) === idNumber) {
 					indexToDelete = i;
 				}
 			}
@@ -187,9 +166,17 @@ export class PinHandler {
 		this.UpdatePinBoxStatus();
 	};
 
+	private GetPinNameFromDiv = (pinElement: HTMLElement): string => {
+		return pinElement.getElementsByTagName('input')[0].value;
+	};
+
+	private GetPinNumberFromID = (id: string): number => {
+		return parseInt(id.split('_')[1], 10);
+	};
+
 	private SelectPin = (pinDiv: HTMLElement) => {
-		this.projectData.currentlySelectedPin = parseInt(pinDiv.id.split('_')[1]);
-		console.log('selected pin ' + this.projectData.currentlySelectedPin);
+		this.projectData.currentlySelectedPin = this.GetPinNumberFromID(pinDiv.id);
+		// console.log('selected pin ' + this.projectData.currentlySelectedPin);
 		this.UpdatePinBoxStatus();
 		this.UpdateAnimationPinNames();
 	};
@@ -199,31 +186,26 @@ export class PinHandler {
 
 		let deleted: boolean = false;
 		for (let i = 0; i < this.animationData.pins.length; i++) {
-			console.log('checking if ' + this.animationData.pins[i].id.toString + ' === ' + pinID.toString());
+			// console.log('checking if ' + this.animationData.pins[i].id.toString + ' === ' + pinID.toString());
 			if (this.animationData.pins[i].id === pinID) {
 				delete this.animationData.pins[i];
 			}
-			console.log('deleting pinID ' + pinID);
+			// console.log('deleting pinID ' + pinID);
 			deleted = true;
 		}
 
 		if (!deleted) {
-			console.log('failed to find pinID ' + pinID + ' in list of pins');
+			// console.log('failed to find pinID ' + pinID + ' in list of pins');
 		}
 
 		// delete pin data from each frame
 		for (let f = 0; f < this.animationData.frames.length; f++) {
 			if (this.animationData.frames[f][pinID] !== undefined) {
 				delete this.animationData.frames[f][pinID];
-				console.log('deleting pinID ' + pinID + ' data from frame ' + f);
+				// console.log('deleting pinID ' + pinID + ' data from frame ' + f);
 			} else {
-				console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');
+				// console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');
 			}
 		}
-	};
-
-	private AddPinButtonPressed = () => {
-		this.UpdatePinSettingsDiv();
-		this.pins += 1;
 	};
 }

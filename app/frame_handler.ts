@@ -81,7 +81,6 @@ export class FrameHandler {
 		if (this.playingAnimation && this.currentFrame === this.filenames.length - 1 && !this.animationData.loop) {
 			this.currentFrame = -1;
 		}
-		console.log('playingAnimation = ', this.playingAnimation);
 	}
 	public StopPlayingAnimation() {
 		this.playingAnimation = false;
