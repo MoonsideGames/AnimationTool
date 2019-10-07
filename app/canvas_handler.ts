@@ -69,8 +69,6 @@ export class CanvasHandler {
 		// update canvas data
 		this.projectData.widthRatio = ratioWidth;
 		this.projectData.heightRatio = ratioHeight;
-		// update origin number display
-		this.orginInfo.innerText = 'Origin X: ' + this.animationData.originX + ' Y: ' + this.animationData.originY;
 	};
 
 	private UpdateCanvasDataSize() {

@@ -34,6 +34,10 @@ export class Page {
 
 	private addPinButton: HTMLElement;
 
+	private outputMessage: HTMLElement;
+
+	private canvasMouseHeld: boolean = false;
+
 	public Load() {
 		// defining blank slate animation data
 		this.animationData = {
@@ -58,6 +62,8 @@ export class Page {
 			widthRatio: 0
 		};
 
+		this.outputMessage = document.getElementById('outputMessage') as HTMLElement;
+
 		this.message = document.getElementById('message') as HTMLElement;
 		const canvasImage = document.getElementById('canvasImage') as HTMLCanvasElement;
 
@@ -81,7 +87,18 @@ export class Page {
 			imageElement,
 			document.getElementById('originInfo') as HTMLElement
 		);
-		this.canvasImage.addEventListener('mousedown', this.CanvasMouseDown);
+		canvasImage.addEventListener('mousedown', (event: MouseEvent) => {
+			this.canvasMouseHeld = true;
+			this.canvasHandler.CanvasMouseDown(event.offsetX, event.offsetY);
+			this.pinHandler.UpdatePinBoxStatus();
+		});
+		canvasImage.addEventListener('mousemove', this.CanvasMouseDown);
+
+		// reset holds on global mouse up
+		document.addEventListener('mouseup', () => {
+			this.canvasMouseHeld = false;
+			this.frameHandler.frameViewerMouseHeld = false;
+		});
 
 		// setup frame handler
 		this.frameHandler = new FrameHandler(
@@ -196,6 +213,9 @@ export class Page {
 	}
 
 	private ProjectHasNeccesaryData(): boolean {
+		this.outputMessage.innerText = '';
+		this.outputMessage.classList.remove('errorMessage');
+
 		let pass: boolean = true;
 		let errorString: string = '';
 		this.frameHandler.RefreshFrameViewer();
@@ -233,14 +253,17 @@ export class Page {
 			pass = false;
 		}
 		if (!pass) {
-			alert(errorString);
+			this.outputMessage.innerText = errorString;
+			this.outputMessage.classList.add('errorMessage');
 		}
 		return pass;
 	}
 
 	private CanvasMouseDown = (event: MouseEvent) => {
-		this.canvasHandler.CanvasMouseDown(event.offsetX, event.offsetY);
-		this.pinHandler.UpdatePinBoxStatus();
+		if (this.canvasMouseHeld) {
+			this.canvasHandler.CanvasMouseDown(event.offsetX, event.offsetY);
+			this.pinHandler.UpdatePinBoxStatus();
+		}
 	};
 
 	private AddPinButtonPressed = () => {

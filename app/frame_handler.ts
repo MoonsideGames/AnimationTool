@@ -3,6 +3,7 @@ import { IFramePinData } from './Interfaces/IFramePinData';
 import { IProjectData } from './Interfaces/IProjectData';
 
 export class FrameHandler {
+	public frameViewerMouseHeld: boolean;
 	private start: number = 0;
 
 	private frameNumberDiv: HTMLElement;
@@ -41,6 +42,13 @@ export class FrameHandler {
 		this.imageElement = imageElement;
 		this.projectData = projectData;
 		this.frameViewer = frameViewer;
+
+		this.frameViewer.addEventListener('mousedown', () => {
+			this.frameViewerMouseHeld = true;
+		});
+		this.frameViewer.addEventListener('mouseup', () => {
+			this.frameViewerMouseHeld = false;
+		});
 	}
 
 	public GetCurrentFrame(): number {
@@ -103,9 +111,15 @@ export class FrameHandler {
 			this.frameViewer.appendChild(newDiv);
 			newDiv.className = 'frame';
 
-			newDiv.addEventListener('click', () => {
+			newDiv.addEventListener('mousedown', () => {
 				this.StopPlayingAnimation();
 				this.GoToFrame(i);
+			});
+			newDiv.addEventListener('mousemove', () => {
+				if (this.frameViewerMouseHeld) {
+					this.StopPlayingAnimation();
+					this.GoToFrame(i);
+				}
 			});
 		}
 	};
