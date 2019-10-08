@@ -293,7 +293,11 @@ export class Page {
 		this.frameHandler.StopPlayingAnimation();
 		this.frameHandler.TogglePlayingAnimation();
 
-		this.canvasHandler.ResizeCanvas();
+		const imageElement = new Image();
+		imageElement.src = filenames[0];
+		imageElement.onload = () => {
+			this.canvasHandler.ResizeCanvas(imageElement.width, imageElement.height);
+		};
 
 		this.frameHandler.ConstructFrameUI();
 	};

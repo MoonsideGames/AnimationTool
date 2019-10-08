@@ -25,18 +25,25 @@ export class CanvasHandler {
 		this.imageElement = imageElement;
 		this.orginInfo = originInfo;
 
-		this.ResizeCanvas();
+		this.ResizeCanvas(0, 0);
 		this.UpdateCanvasDataSize();
 		const canvasContext: CanvasRenderingContext2D = this.canvasImage.getContext('2d')!;
 		canvasContext.fillRect(0, 0, this.targetImageSize, this.targetImageSize);
 		canvasContext.imageSmoothingEnabled = false;
 	}
 
-	public ResizeCanvas() {
+	public ResizeCanvas(width: number, height: number) {
 		// get image ratio, then scale default width by it
-		const hwratio = this.imageElement.height / this.imageElement.width;
-		const newWidth = this.targetImageSize / hwratio;
-		const newHeight = this.targetImageSize;
+		const hwratio = height / width;
+
+		let newWidth = this.targetImageSize / hwratio;
+		let newHeight = this.targetImageSize;
+
+		if (newWidth > 600) {
+			newWidth = 600;
+			newHeight = 600 * hwratio;
+		}
+
 		this.canvasImage.width = newWidth;
 		this.canvasImage.height = newHeight;
 		this.UpdateCanvasDataSize();

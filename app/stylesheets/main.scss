@@ -32,8 +32,42 @@ div {
 }
 
 .spriteCanvas {
-	border: 1px solid $main-border-color;
 	padding: 0;
+	min-width: 200px;
+	border: 1px solid;
+	border-style: dashed;
+	border-radius: 10px;
+}
+
+#top {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 0 auto;
+	width: 75%;
+}
+
+#settings {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	width: 20%;
+	max-width: 200px;
+}
+
+.settingsItem {
+	margin: 12px;
+	padding: 4px;
+
+	text-align: center;
+
+	border: 1px solid;
+	border-radius: 5px;
+
+	input {
+		width: 80%;
+	}
 }
 
 .borderbox {
@@ -56,7 +90,10 @@ div {
 #frameViewer {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
+	justify-content: center;
 }
+
 .frame {
 	flex: 1;
 	width: 32px;
