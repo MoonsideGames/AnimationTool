@@ -181,7 +181,7 @@ export class FrameHandler {
 			// frame number update
 			this.frameNumberDiv.className = '';
 			this.frameNumberDiv.innerText =
-				'Frame  ' + (this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
+				(this.currentFrame + 1).toString() + ' / ' + this.filenames.length.toString();
 			// draw pins
 			for (let i = 0; i < 10; i++) {
 				this.canvasContext.strokeStyle = '#FF0000';

@@ -1,52 +1,57 @@
 <html>
-  <head>
-    <title>AnimationTool</title>
-    <meta charset="utf-8">
 
-    <link rel="icon" href="/favicon.ico">
-  </head>
-	<body>
-    <div id="dropZone" class="center">
+<head>
+  <title>AnimationTool</title>
+  <meta charset="utf-8">
+
+  <link rel="icon" href="/favicon.ico">
+</head>
+
+<body>
+  <div id="dropZone">
+    <div id="allTop">
       <div id="top">
         <div id="canvasStyle">
-          <canvas id="canvasImage"  class="spriteCanvas" alt=""></canvas>
+          <canvas id="canvasImage" class="spriteCanvas" alt=""></canvas>
           <div id="frameNumber"></div>
         </div>
-        <div id="settings">
-          <div class="settingsItem">
-            <div class="label">Name</div>
-            <input type="text" id="filename">
-          </div>
-          <div class="settingsItem">
-            <div class="label">FPS</div>
-            <input type="number" value="30" id="framerate">
-          </div>
-          <div class="settingsItem">
-            <div class="label">Looping</div>
-            <input type="checkbox" id="looping">
-          </div>
+      </div>
+      <div id="settings">
+        <div class="settingsItem">
+          <div class="label">Name</div>
+          <input type="text" id="filename">
+        </div>
+        <div class="settingsItem">
+          <div class="label">FPS</div>
+          <input type="number" value="30" id="framerate">
+        </div>
+        <div class="settingsItem">
+          <div class="label">Looping</div>
+          <input type="checkbox" id="looping">
         </div>
       </div>
-      <div class="borderbox">
-        <div id="frameViewer"></div>
-      </div>
-      <div class="borderbox">
-        <div id="pinContainer" class="pinContainer" >
-          <div class="pinButtonContainer" id="originPin">Origin</div>
-        </div>
-        <div id="addpin" class="pinButtonContainer">+</div>
-      </div>
-      <div id = "info">
-          <div class="instruction">
-            <p>Drag images onto the page to upload them</p>
-            <p><b>Arrow Keys</b> - Advance frames</p>
-            <p><b>Spacebar</b> - Play/Pause Animation</p>
-            <p><b>S</b> - Save</p>
-          </div>
-          <div id="outputMessage"></div>
-        </div>
     </div>
+    <div class="borderbox">
+      <div id="frameViewer"></div>
+    </div>
+    <div class="borderbox">
+      <div id="pinContainer" class="pinContainer">
+        <div class="pinButtonContainer" id="originPin">Origin</div>
+      </div>
+      <div id="addpin" class="pinButtonContainer">+</div>
+    </div>
+    <div id="info">
+      <div class="instruction">
+        <p>Drag images onto the page to upload them</p>
+        <p><b>Arrow Keys</b> - Advance frames</p>
+        <p><b>Spacebar</b> - Play/Pause Animation</p>
+        <p><b>S</b> - Save</p>
+      </div>
+      <div id="outputMessage"></div>
+    </div>
+  </div>
 
-    <script src="bundle.js"></script>
-	</body>
+  <script src="bundle.js"></script>
+</body>
+
 </html>

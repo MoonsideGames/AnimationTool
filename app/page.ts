@@ -239,7 +239,7 @@ export class Page {
 						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
 							if (!errorOnFrame) {
-								pinDataErrorString += '  Frame ' + f + ' :\n';
+								pinDataErrorString += f + ' :\n';
 							}
 							pinDataErrorString += '      Pin: ' + this.animationData.pins[p].name + '\n';
 							passPinData = false;
@@ -309,7 +309,7 @@ export class Page {
 		this.animationData.originY = null;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
-		this.animationData.frames = [ { filename: '' } ];
+		this.animationData.frames = [{ filename: '' }];
 
 		// blank slate canvas data
 		this.projectData.currentFrame = 0;
