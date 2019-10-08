@@ -1,6 +1,11 @@
+language: node_js
+node_js:
+  - 10
+
 # Compile the site
 script:
-  - npm run build
+  - pnpm install
+  - pnpm run build
 
 # Deploy the site - this hook comes from Travis integration
 deploy:
