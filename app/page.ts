@@ -62,6 +62,13 @@ export class Page {
 			widthRatio: 0
 		};
 
+		const info = document.getElementById('info') as HTMLElement;
+
+		const helpButton = document.getElementById('helpButton') as HTMLElement;
+		helpButton.addEventListener('click', () => {
+			info.classList.toggle('hidden');
+		});
+
 		this.outputMessage = document.getElementById('outputMessage') as HTMLElement;
 
 		this.message = document.getElementById('message') as HTMLElement;
@@ -309,7 +316,7 @@ export class Page {
 		this.animationData.originY = null;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
-		this.animationData.frames = [{ filename: '' }];
+		this.animationData.frames = [ { filename: '' } ];
 
 		// blank slate canvas data
 		this.projectData.currentFrame = 0;

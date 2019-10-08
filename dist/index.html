@@ -8,11 +8,12 @@
 </head>
 
 <body>
+  <div id="helpButton">?</div>
   <div id="dropZone">
     <div id="allTop">
       <div id="top">
         <div id="canvasStyle">
-          <canvas id="canvasImage" class="spriteCanvas" alt=""></canvas>
+          <canvas id="canvasImage" class="spriteCanvas" alt="" width="256" height="256"></canvas>
           <div id="frameNumber"></div>
         </div>
       </div>
@@ -40,12 +41,12 @@
       </div>
       <div id="addpin" class="pinButtonContainer">+</div>
     </div>
-    <div id="info">
+    <div id="info" class="hidden">
       <div class="instruction">
-        <p>Drag images onto the page to upload them</p>
+        <p>Drag a group of images onto the page to load them</p>
         <p><b>Arrow Keys</b> - Advance frames</p>
         <p><b>Spacebar</b> - Play/Pause Animation</p>
-        <p><b>S</b> - Save</p>
+        <p><b>S</b> - Export</p>
       </div>
       <div id="outputMessage"></div>
     </div>

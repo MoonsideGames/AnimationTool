@@ -25,10 +25,10 @@ export class CanvasHandler {
 		this.imageElement = imageElement;
 		this.orginInfo = originInfo;
 
-		this.ResizeCanvas(0, 0);
+		this.ResizeCanvas(256, 256);
 		this.UpdateCanvasDataSize();
 		const canvasContext: CanvasRenderingContext2D = this.canvasImage.getContext('2d')!;
-		canvasContext.fillRect(0, 0, this.targetImageSize, this.targetImageSize);
+		canvasContext.clearRect(0, 0, this.targetImageSize, this.targetImageSize);
 		canvasContext.imageSmoothingEnabled = false;
 	}
 

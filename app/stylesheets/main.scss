@@ -27,6 +27,41 @@ div {
 	font-family: "Arial", Helvetica, sans-serif;
 }
 
+#helpButton {
+	display: block;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	border: 1px solid;
+	border-radius: 25px;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+}
+
+.hidden {
+	display: none !important;
+}
+
+#info {
+	display: block;
+	position: absolute;
+	right: 30px;
+	top: 10px;
+	width: 200px;
+	text-align: center;
+}
+
+.instruction {
+	font-size: 12px;
+	margin: auto;
+	width: 80%;
+	padding: 8px;
+	text-align: center;
+	background-color: $secondary-bg-color;
+}
+
 .center {
 	margin: auto;
 	padding: 10px;
@@ -95,7 +130,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 input[type='number'] {
-    -moz-appearance:textfield;
+	-moz-appearance: textfield;
 }
 
 #framerate {
@@ -109,15 +144,6 @@ input[type='number'] {
 	width: 50%;
 	padding: 8px;
 	text-align: center;
-}
-
-.instruction {
-	font-size: 12px;
-	margin: auto;
-	width: 50%;
-	padding: 8px;
-	text-align: center;
-	background-color: $secondary-bg-color;
 }
 
 #frameViewer {
