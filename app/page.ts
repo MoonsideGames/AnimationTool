@@ -282,9 +282,9 @@ export class Page {
 
 		const newFrames: IFrame[] = [];
 
-		for (let i = 0; i < event.dataTransfer!.files.length; i++) {
+		for (let i = 0; i < filenames.length; i++) {
 			newFrames.push({
-				filename: event.dataTransfer!.files[i].name
+				filename: i.toString()
 			});
 		}
 
