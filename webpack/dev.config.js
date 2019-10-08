@@ -7,7 +7,7 @@ module.exports = {
 		main: [ './index.ts' ]
 	},
 	output: {
-		filename: 'bundle.js'
+		filename: 'exporter/bundle.js'
 	},
 	resolve: {
 		// Add `.ts` and `.tsx` as a resolvable extension.
