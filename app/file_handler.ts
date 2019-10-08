@@ -1,16 +1,18 @@
 export class FileHandler {
-	public static ProcessImages = (fileList: FileList): Promise<string[]> => {
+	public static ProcessImages = (fileList: FileList): Promise<[string[], string[]]> => {
 		return new Promise(async (resolve, reject) => {
-			const filenames: string[] = [];
+			const processedFilenames: string[] = [];
+			const originalFilenames: string[] = [];
 
 			for (let i = 0; i < fileList.length; i++) {
 				const file = fileList[i];
 				const filename = await FileHandler.ProcessImage(file);
 
-				filenames.push(filename);
+				processedFilenames.push(filename);
+				originalFilenames.push(file.name);
 			}
 
-			resolve(filenames);
+			resolve([ processedFilenames, originalFilenames ]);
 		});
 	};
 

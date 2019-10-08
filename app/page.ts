@@ -69,6 +69,11 @@ export class Page {
 			info.classList.toggle('hidden');
 		});
 
+		const exportButton = document.getElementById('exportButton') as HTMLElement;
+		exportButton.addEventListener('click', () => {
+			this.ExportData();
+		});
+
 		this.outputMessage = document.getElementById('outputMessage') as HTMLElement;
 
 		this.message = document.getElementById('message') as HTMLElement;
@@ -190,33 +195,37 @@ export class Page {
 
 				case 83: {
 					if (document.activeElement === document.body) {
-						this.pinHandler.UpdateAnimationPinNames();
-
-						if (this.ProjectHasNeccesaryData()) {
-							const zip = new JSZip();
-							// name of project
-							const name = this.filenameInput.value;
-							// .anim file
-							zip.file(name + '.anim', JSON.stringify(this.animationData));
-							// pngs
-							const filenames = this.frameHandler.GetFilenames();
-							for (let i = 0; i < filenames.length; i++) {
-								const filedata = filenames[i].split('base64,')[1];
-								const padding = i.toString().padStart(3, '0');
-								zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
-							}
-							// save zip
-							zip.generateAsync({ type: 'blob' }).then((content) => {
-								// see FileSaver.js
-								saveAs(content, name + '.zip');
-							});
-						}
+						this.ExportData();
 					}
 				}
 			}
 		};
 
 		document.addEventListener('keydown', keyDown);
+	}
+
+	private ExportData() {
+		this.pinHandler.UpdateAnimationPinNames();
+
+		if (this.ProjectHasNeccesaryData()) {
+			const zip = new JSZip();
+			// name of project
+			const name = this.filenameInput.value;
+			// .anim file
+			zip.file(name + '.anim', JSON.stringify(this.animationData));
+			// pngs
+			const filenames = this.frameHandler.GetFilenames();
+			for (let i = 0; i < filenames.length; i++) {
+				const filedata = filenames[i].split('base64,')[1];
+				const padding = i.toString().padStart(3, '0');
+				zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
+			}
+			// save zip
+			zip.generateAsync({ type: 'blob' }).then((content) => {
+				// see FileSaver.js
+				saveAs(content, name + '.zip');
+			});
+		}
 	}
 
 	private ProjectHasNeccesaryData(): boolean {
@@ -284,14 +293,14 @@ export class Page {
 		event.stopPropagation();
 		event.preventDefault();
 
-		const filenames = await FileHandler.ProcessImages(event.dataTransfer!.files);
-		this.frameHandler.loadFrames(filenames);
+		const [ processedFilenames, originalFilenames ] = await FileHandler.ProcessImages(event.dataTransfer!.files);
+		this.frameHandler.loadFrames(processedFilenames);
 
 		const newFrames: IFrame[] = [];
 
-		for (let i = 0; i < filenames.length; i++) {
+		for (let i = 0; i < originalFilenames.length; i++) {
 			newFrames.push({
-				filename: i.toString()
+				filename: originalFilenames[i].toString()
 			});
 		}
 
@@ -301,7 +310,7 @@ export class Page {
 		this.frameHandler.TogglePlayingAnimation();
 
 		const imageElement = new Image();
-		imageElement.src = filenames[0];
+		imageElement.src = processedFilenames[0];
 		imageElement.onload = () => {
 			this.canvasHandler.ResizeCanvas(imageElement.width, imageElement.height);
 		};
