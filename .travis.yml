@@ -2,9 +2,14 @@ language: node_js
 node_js:
   - 10
 
-# Compile the site
-script:
+cache:
+  npm: false
+before_install:
+  - curl -L https://unpkg.com/@pnpm/self-installer | node
+install:
   - pnpm install
+  
+script:
   - pnpm run build
 
 # Deploy the site - this hook comes from Travis integration
