@@ -124,6 +124,9 @@ export class PinHandler {
 		// text input field for pin name
 		const newNameInput = document.createElement('input');
 		newNameInput.id = 'nameInput_' + this.pins.toString();
+		newDiv.addEventListener('click', () => {
+			this.SelectPin(newDiv);
+		});
 		newDiv.appendChild(newNameInput);
 		newNameInput.value = 'PinName_' + this.pins.toString();
 		newNameInput.addEventListener('focusout', () => {
@@ -155,13 +158,7 @@ export class PinHandler {
 		});
 		// break
 		newDiv.appendChild(document.createElement('br'));
-		// select pin to place
-		const selectPinButton = document.createElement('button');
-		newDiv.appendChild(selectPinButton);
-		selectPinButton.textContent = 'Select';
-		selectPinButton.addEventListener('click', () => {
-			this.SelectPin(newDiv);
-		});
+
 		this.UpdateAnimationPinNames();
 		this.UpdatePinBoxStatus();
 	};

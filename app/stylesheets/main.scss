@@ -1,7 +1,9 @@
-$bg-color: #859094;
+$bg-color: #3d2b56;
 $bg-dark-color: #7a8386;
+$canvas-bg-color: #859094;
+$secondary-bg-color: #2c497f;
 $main-border-color: #6b7578;
-$main-font-color: #101e24;
+$main-font-color: #ccf5ac;
 $selected-border-color: #09e7ca;
 $selected-bg-color: #4d998f;
 $warning-border-color: #aa093a;
@@ -9,6 +11,10 @@ $warning-bg-color: #6e545c;
 $warning-selected-border-color: #ff044f;
 $warning-selected-bg-color: #aa093a;
 $warning-text-color: #ff1d61;
+
+body {
+	background-color: $bg-color;
+}
 
 div {
 	user-select: none;
@@ -37,6 +43,7 @@ div {
 	border: 1px solid;
 	border-style: dashed;
 	border-radius: 10px;
+	background-color: $canvas-bg-color;
 }
 
 #top {
@@ -53,7 +60,8 @@ div {
 	flex-direction: column;
 	justify-content: flex-end;
 	width: 20%;
-	max-width: 200px;
+	max-width: 150px;
+	min-width: 100px;
 }
 
 .settingsItem {
@@ -70,6 +78,16 @@ div {
 	}
 }
 
+.settingsItem {
+	input {
+		border-radius: 5px;
+	}
+}
+
+#framerate {
+	width: 30px;
+}
+
 .borderbox {
 	font-size: 12px;
 	margin: auto;
@@ -84,7 +102,7 @@ div {
 	width: 50%;
 	padding: 8px;
 	text-align: center;
-	background-color: $bg-dark-color;
+	background-color: $secondary-bg-color;
 }
 
 #frameViewer {
@@ -150,15 +168,26 @@ body {
 }
 
 .pinContainer {
-	display: flex;
-	flex-direction: row;
+	display: inline-grid;
 }
+
+$pin-button-size: 6vw;
+
 .pinButtonContainer {
-	max-width: 10%;
-	flex: 1;
+	grid-row-start: 1;
+	grid-row-end: 1;
+	width: $pin-button-size;
+	height: $pin-button-size;
 	font-size: 12px;
 	border: 2px solid $main-border-color;
+	border-radius: 5px;
 	padding: 1px;
+
+	text-align: center;
+	vertical-align: middle;
+	line-height: $pin-button-size;
+
+	margin: 5px;
 
 	&.warning {
 		border: 2px solid $warning-border-color;
@@ -175,11 +204,25 @@ body {
 	}
 
 	input {
-		width: 100%;
+		width: 80%;
+		transform: translateY($pin-button-size / 2);
 	}
 }
 
+#addpin {
+	display: inline-block;
+	width: $pin-button-size;
+	height: $pin-button-size;
+	background-color: $warning-bg-color;
+	font-size: 4vw;
+}
+
 .removeButton {
+	position: relative;
+	transform: translate($pin-button-size / 2, -$pin-button-size / 2);
+	width: 15px;
+	height: 15px;
+	border-radius: 5px;
 	background-color: rgb(158, 15, 34);
 	color: rgb(227, 227, 236);
 }
