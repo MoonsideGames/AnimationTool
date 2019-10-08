@@ -60,6 +60,7 @@ div {
 	padding: 8px;
 	text-align: center;
 	background-color: $secondary-bg-color;
+	border-radius: 5px;
 }
 
 .center {
@@ -283,9 +284,12 @@ $pin-button-size: 75px;
 	display: block;
 	margin: 0 auto;
 	position: relative;
-	transform: translate($pin-button-size / 2, -$pin-button-size / 2);
+	transform: translate($pin-button-size / 2, -$pin-button-size / 2 + 5px);
 	width: 15px;
+	border: 1px solid;
 	border-radius: 50%;
-	background-color: rgb(158, 15, 34);
-	color: rgb(227, 227, 236);
+	background-color: #9e0f22;
+	color: #e3e3ec;
+	height: 15px;
+	line-height: 15px;
 }

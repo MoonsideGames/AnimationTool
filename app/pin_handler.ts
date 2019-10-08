@@ -32,7 +32,7 @@ export class PinHandler {
 			this.UpdatePinBoxStatus();
 		});
 		// put origin into pincontainer array
-		this.allPinContainers = [originPin];
+		this.allPinContainers = [ originPin ];
 	}
 
 	public UpdatePinBoxStatus = () => {
@@ -131,7 +131,7 @@ export class PinHandler {
 			this.UpdateAnimationPinNames();
 		});
 		// button to remove pin
-		const removePinButton = document.createElement('button');
+		const removePinButton = document.createElement('div');
 		newDiv.appendChild(removePinButton);
 		removePinButton.textContent = 'X';
 		removePinButton.className = 'removeButton';
