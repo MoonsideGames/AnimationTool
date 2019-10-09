@@ -44,7 +44,8 @@ export class Page {
 			frameRate: 30,
 			frames: [
 				{
-					filename: ''
+					filename: '',
+					pinData: {}
 				}
 			],
 			loop: true,
@@ -211,15 +212,29 @@ export class Page {
 			const zip = new JSZip();
 			// name of project
 			const name = this.filenameInput.value;
+
+			// generate output filenames
+			var outputFilenames = [];
+			for (let i = 0; i < this.animationData.frames.length; i++) {
+				const padding = i.toString().padStart(3, '0');
+				const filename = name + '_' + padding.toString() + '.png';
+				outputFilenames[i] = filename;
+			}
+
+			for (let i = 0; i < this.animationData.frames.length; i++) {
+				this.animationData.frames[i].filename = outputFilenames[i];
+			}
+
 			// .anim file
 			zip.file(name + '.anim', JSON.stringify(this.animationData));
+
 			// pngs
 			const filenames = this.frameHandler.GetFilenames();
 			for (let i = 0; i < filenames.length; i++) {
 				const filedata = filenames[i].split('base64,')[1];
-				const padding = i.toString().padStart(3, '0');
-				zip.file(name + '_' + padding.toString() + '.png', filedata, { base64: true });
+				zip.file(outputFilenames[i], filedata, { base64: true });
 			}
+
 			// save zip
 			zip.generateAsync({ type: 'blob' }).then((content) => {
 				// see FileSaver.js
@@ -253,7 +268,7 @@ export class Page {
 					if (this.animationData.pins[p] !== undefined) {
 						const pinIDtoCheck = this.animationData.pins[p].id;
 						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
-						if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
+						if (this.animationData.frames[f].pinData[pinIDtoCheck] === undefined) {
 							if (!errorOnFrame) {
 								pinDataErrorString += f + ' :\n';
 							}
@@ -300,7 +315,8 @@ export class Page {
 
 		for (let i = 0; i < originalFilenames.length; i++) {
 			newFrames.push({
-				filename: originalFilenames[i].toString()
+				filename: originalFilenames[i].toString(),
+				pinData: {}
 			});
 		}
 
@@ -325,7 +341,7 @@ export class Page {
 		this.animationData.originY = null;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
-		this.animationData.frames = [ { filename: '' } ];
+		this.animationData.frames = [ { filename: '', pinData: {} } ];
 
 		// blank slate canvas data
 		this.projectData.currentFrame = 0;

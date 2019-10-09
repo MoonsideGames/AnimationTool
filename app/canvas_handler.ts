@@ -63,13 +63,12 @@ export class CanvasHandler {
 			this.animationData.originY = pixelY;
 		} else {
 			// console.log('current pin id = ' + this.projectData.currentlySelectedPin);
-			const newPinData: IFramePinData = {
-				id: this.projectData.currentlySelectedPin,
+			const newPinData = {
 				x: pixelX,
 				y: pixelY
 			};
 
-			this.animationData.frames[this.projectData.currentFrame][
+			this.animationData.frames[this.projectData.currentFrame].pinData[
 				this.projectData.currentlySelectedPin
 			] = newPinData;
 		}

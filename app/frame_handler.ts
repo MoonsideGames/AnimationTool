@@ -144,7 +144,7 @@ export class FrameHandler {
 						const pinIDtoCheck = this.animationData.pins[p].id;
 						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.frameViewer.children[f] !== undefined) {
-							if (this.animationData.frames[f][pinIDtoCheck] === undefined) {
+							if (this.animationData.frames[f].pinData[pinIDtoCheck] === undefined) {
 								this.frameViewer.children[f].classList.add('warning');
 								break;
 							}
@@ -186,9 +186,7 @@ export class FrameHandler {
 			for (let i = 0; i < 10; i++) {
 				this.canvasContext.strokeStyle = '#FF0000';
 				if (this.animationData.frames[this.projectData.currentFrame] !== undefined) {
-					const currentSelectedPinData: IFramePinData = this.animationData.frames[
-						this.projectData.currentFrame
-					][i];
+					const currentSelectedPinData = this.animationData.frames[this.projectData.currentFrame].pinData[i];
 					if (currentSelectedPinData !== null && currentSelectedPinData !== undefined) {
 						this.DrawCrossHair(50, this.canvasContext, currentSelectedPinData.x, currentSelectedPinData.y);
 					}

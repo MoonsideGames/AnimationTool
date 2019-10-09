@@ -46,7 +46,7 @@ export class PinHandler {
 			const pinNumber = this.GetPinNumberFromID(pinDiv.id);
 			for (let f = 0; f < this.animationData.frames.length; f++) {
 				if (this.animationData.frames[f] !== undefined) {
-					if (this.animationData.frames[f][pinNumber] === undefined) {
+					if (this.animationData.frames[f].pinData[pinNumber] === undefined) {
 						pinDiv.classList.add('warning');
 						// console.log('added warning');
 						break;
@@ -203,8 +203,8 @@ export class PinHandler {
 
 		// delete pin data from each frame
 		for (let f = 0; f < this.animationData.frames.length; f++) {
-			if (this.animationData.frames[f][pinID] !== undefined) {
-				delete this.animationData.frames[f][pinID];
+			if (this.animationData.frames[f].pinData[pinID] !== undefined) {
+				delete this.animationData.frames[f].pinData[pinID];
 				// console.log('deleting pinID ' + pinID + ' data from frame ' + f);
 			} else {
 				// console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');
