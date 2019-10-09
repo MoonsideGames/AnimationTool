@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
 	mode: 'production',
@@ -10,6 +11,11 @@ module.exports = {
 		// Add `.ts` and `.tsx` as a resolvable extension.
 		extensions: [ '.ts', '.tsx', '.js' ]
 	},
+	plugins: [
+		new MiniCssExtractPlugin({
+			filename: 'exporter/main.css'
+		})
+	],
 	module: {
 		rules: [
 			// all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
@@ -22,7 +28,13 @@ module.exports = {
 			},
 			{
 				test: /\.scss$/,
-				use: [ 'style-loader', 'css-loader', 'sass-loader?sourceMap' ]
+				use: [
+					{
+						loader: MiniCssExtractPlugin.loader
+					},
+					'css-loader',
+					'sass-loader'
+				]
 			}
 		]
 	}
