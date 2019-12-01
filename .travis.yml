@@ -8,7 +8,7 @@ before_install:
   - curl -L https://unpkg.com/@pnpm/self-installer | node
 install:
   - pnpm install
-  
+
 script:
   - pnpm run build
 
@@ -28,5 +28,6 @@ deploy:
   skip_cleanup: true
   # Set in Travis CI dashboard
   github_token: $GITHUB_TOKEN
+  keep_history: true
   on:
     branch: master
