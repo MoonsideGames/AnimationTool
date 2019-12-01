@@ -11,23 +11,5 @@ install:
 
 script:
   - pnpm run build
-
-# Deploy the site - this hook comes from Travis integration
-deploy:
-  # The output of our static site
-  local_dir: dist
-  # The repository we are deploying to
-  repo: MoonsideGames/moonsidegames.github.io
-  # The branch we are pushing the static repository
-  target_branch: master
-  # Information to use in the commit
-  email: evan@moonside.games
-  name: "Evan Hemsley"
-  provider: pages
-  # Recommended setting
-  skip_cleanup: true
-  # Set in Travis CI dashboard
-  github_token: $GITHUB_TOKEN
-  keep_history: true
-  on:
-    branch: master
+  - pnpm install -g gh-pages
+  - gh-pages --dist dist --dest exporter --repo https://x-access-token:${GITHUB_TOKEN}@github.com/MoonsideGames/moonsidegames.github.io.git --branch master
