@@ -1,5 +1,4 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { IFramePinData } from './Interfaces/IFramePinData';
 import { IProjectData } from './Interfaces/IProjectData';
 
 export class FrameHandler {

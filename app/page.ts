@@ -45,7 +45,7 @@ export class Page {
 			frames: [
 				{
 					filename: '',
-					pinData: {}
+					pinData: []
 				}
 			],
 			loop: true,
@@ -316,7 +316,7 @@ export class Page {
 		for (let i = 0; i < originalFilenames.length; i++) {
 			newFrames.push({
 				filename: originalFilenames[i].toString(),
-				pinData: {}
+				pinData: []
 			});
 		}
 
@@ -341,7 +341,7 @@ export class Page {
 		this.animationData.originY = null;
 		this.animationData.frameRate = 30;
 		this.animationData.loop = true;
-		this.animationData.frames = [ { filename: '', pinData: {} } ];
+		this.animationData.frames = [ { filename: '', pinData: [] } ];
 
 		// blank slate canvas data
 		this.projectData.currentFrame = 0;

@@ -8,7 +8,7 @@ module.exports = {
 		main: [ './index.ts' ]
 	},
 	output: {
-		filename: 'exporter/bundle.js'
+		filename: 'bundle.js'
 	},
 	resolve: {
 		// Add `.ts` and `.tsx` as a resolvable extension.
@@ -16,7 +16,7 @@ module.exports = {
 	},
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: 'exporter/main.css'
+			filename: 'main.css'
 		})
 	],
 	module: {
