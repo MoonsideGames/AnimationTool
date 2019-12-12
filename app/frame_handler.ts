@@ -1,5 +1,4 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { IFramePinData } from './Interfaces/IFramePinData';
 import { IProjectData } from './Interfaces/IProjectData';
 
 export class FrameHandler {
@@ -138,11 +137,10 @@ export class FrameHandler {
 		for (let f = 0; f < this.animationData.frames.length; f++) {
 			// this.frameViewer.children[f].classList.add('warning');
 
-			if (this.animationData.pins !== undefined) {
-				for (let p = 0; p < this.animationData.pins.length; p++) {
-					if (this.animationData.pins[p] !== undefined) {
-						const pinIDtoCheck = this.animationData.pins[p].id;
-						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
+			if (this.animationData.pinDefinitions !== undefined) {
+				for (let p = 0; p < this.animationData.pinDefinitions.length; p++) {
+					if (this.animationData.pinDefinitions[p] !== undefined) {
+						const pinIDtoCheck = this.animationData.pinDefinitions[p].id;
 						if (this.frameViewer.children[f] !== undefined) {
 							if (this.animationData.frames[f].pinData[pinIDtoCheck] === undefined) {
 								this.frameViewer.children[f].classList.add('warning');
@@ -217,6 +215,5 @@ export class FrameHandler {
 		}
 		this.RefreshImage();
 		window.requestAnimationFrame(this.windowAnimationUpdate);
-		// console.log('timestamp = ' + timestamp);
 	};
 }

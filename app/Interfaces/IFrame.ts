@@ -1,6 +1,6 @@
-import { IFramePinData } from './IFramePinData';
+import { IPositionData } from './IPositionData';
 
 export interface IFrame {
 	filename: string;
-	pinData: IFramePinData;
+	pinData: IPositionData[];
 }
