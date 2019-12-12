@@ -51,12 +51,12 @@ export class Page {
 			loop: true,
 			originX: -1,
 			originY: -1,
-			pins: []
+			pinDefinitions: []
 		};
 		// blank slate canvas data
 		this.projectData = {
 			currentFrame: 0,
-			currentlySelectedPin: 0,
+			currentlySelectedPin: -1,
 			height: 0,
 			heightRatio: 0,
 			width: 0,
@@ -206,7 +206,7 @@ export class Page {
 	}
 
 	private ExportData() {
-		this.pinHandler.UpdateAnimationPinNames();
+		this.pinHandler.UpdateAnimationPinDefinitions();
 
 		if (this.ProjectHasNeccesaryData()) {
 			const zip = new JSZip();
@@ -263,16 +263,16 @@ export class Page {
 		let passPinData: boolean = true;
 		for (let f = 0; f < this.animationData.frames.length; f++) {
 			const errorOnFrame: boolean = false;
-			if (this.animationData.pins !== undefined) {
-				for (let p = 0; p < this.animationData.pins.length; p++) {
-					if (this.animationData.pins[p] !== undefined) {
-						const pinIDtoCheck = this.animationData.pins[p].id;
+			if (this.animationData.pinDefinitions !== undefined) {
+				for (let p = 0; p < this.animationData.pinDefinitions.length; p++) {
+					if (this.animationData.pinDefinitions[p] !== undefined) {
+						const pinIDtoCheck = this.animationData.pinDefinitions[p].id;
 						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.animationData.frames[f].pinData[pinIDtoCheck] === undefined) {
 							if (!errorOnFrame) {
 								pinDataErrorString += f + ' :\n';
 							}
-							pinDataErrorString += '      Pin: ' + this.animationData.pins[p].name + '\n';
+							pinDataErrorString += '      Pin: ' + this.animationData.pinDefinitions[p].name + '\n';
 							passPinData = false;
 						}
 					}
@@ -299,7 +299,6 @@ export class Page {
 
 	private AddPinButtonPressed = () => {
 		this.pinHandler.AddNewPin();
-		this.pinHandler.pins += 1;
 	};
 
 	private handleFileSelect = async (event: DragEvent) => {
@@ -336,7 +335,7 @@ export class Page {
 
 	private ResetProgram = () => {
 		// defining blank slate animation data
-		this.animationData.pins = [];
+		this.animationData.pinDefinitions = [];
 		this.animationData.originX = null;
 		this.animationData.originY = null;
 		this.animationData.frameRate = 30;

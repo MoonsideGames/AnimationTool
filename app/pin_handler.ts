@@ -1,9 +1,8 @@
 import { IAnimationData } from './Interfaces/IAnimationData';
-import { IPin } from './Interfaces/IPin';
+import { IPinDefinition } from './Interfaces/IPinDefinition';
 import { IProjectData } from './Interfaces/IProjectData';
 
 export class PinHandler {
-	public pins: number = 1;
 	private pinSettingsDiv: HTMLElement;
 	private pinContainer: HTMLElement;
 	private allPinContainers: HTMLElement[];
@@ -26,13 +25,12 @@ export class PinHandler {
 		this.originPin = originPin;
 		this.originPin.classList.add('pinButtonContainer');
 		// add origin click behaviour
-		this.originPin.id = 'pinID_0';
 		this.originPin.addEventListener('click', () => {
-			this.projectData.currentlySelectedPin = 0;
+			this.projectData.currentlySelectedPin = -1;
 			this.UpdatePinBoxStatus();
 		});
 		// put origin into pincontainer array
-		this.allPinContainers = [ originPin ];
+		this.allPinContainers = [];
 	}
 
 	public UpdatePinBoxStatus = () => {
@@ -57,26 +55,26 @@ export class PinHandler {
 		if (this.animationData.originX === null || this.animationData.originY === null) {
 			this.originPin.classList.add('warning');
 		}
-		if (this.projectData.currentlySelectedPin === 0) {
+		if (this.projectData.currentlySelectedPin === -1) {
 			this.originPin.classList.add('selected');
 		}
 	};
 
-	public UpdateAnimationPinNames = () => {
-		const animationPinData: IPin[] = [];
-		for (let i = 1; i < this.allPinContainers.length; i++) {
+	public UpdateAnimationPinDefinitions = () => {
+		const animationPinData: IPinDefinition[] = [];
+		for (let i = 0; i < this.allPinContainers.length; i++) {
 			const pinName: string = this.GetPinNameFromDiv(this.allPinContainers[i]);
 			// console.log('new pin name = ' + pinName);
 			if (pinName !== null && pinName !== undefined) {
-				const newPinData: IPin = {
+				const newPinData: IPinDefinition = {
 					id: this.GetPinNumberFromID(this.allPinContainers[i].id),
 					name: pinName
 				};
 				animationPinData.push(newPinData);
 			}
 		}
-		this.animationData.pins = animationPinData;
-		// console.log('updated animationPinData to ' + animationPinData);
+		this.animationData.pinDefinitions = animationPinData;
+		console.log(animationPinData);
 	};
 
 	public RemoveAllPins = () => {
@@ -87,7 +85,7 @@ export class PinHandler {
 		}
 		this.allPinContainers.splice(1, this.allPinContainers.length - 1);
 		this.UpdatePinBoxStatus();
-		this.UpdateAnimationPinNames();
+		this.UpdateAnimationPinDefinitions();
 	};
 
 	public GetAvailablePins = (): number[] => {
@@ -116,19 +114,21 @@ export class PinHandler {
 		const newDiv = document.createElement('div');
 		this.allPinContainers.push(newDiv);
 
+		let newPinIDString = this.animationData.pinDefinitions.length.toString();
+
 		this.pinContainer.appendChild(newDiv);
-		newDiv.id = 'pinID_' + this.pins.toString();
+		newDiv.id = 'pinID_' + newPinIDString;
 		newDiv.className = 'pinButtonContainer';
 		// text input field for pin name
 		const newNameInput = document.createElement('input');
-		newNameInput.id = 'nameInput_' + this.pins.toString();
+		newNameInput.id = 'nameInput_' + newPinIDString;
 		newDiv.addEventListener('click', () => {
 			this.SelectPin(newDiv);
 		});
 		newDiv.appendChild(newNameInput);
-		newNameInput.value = 'PinName_' + this.pins.toString();
+		newNameInput.value = 'PinName_' + newPinIDString;
 		newNameInput.addEventListener('focusout', () => {
-			this.UpdateAnimationPinNames();
+			this.UpdateAnimationPinDefinitions();
 		});
 		// button to remove pin
 		const removePinButton = document.createElement('div');
@@ -146,21 +146,21 @@ export class PinHandler {
 					indexToDelete = i;
 				}
 			}
-			if (indexToDelete !== 0) {
+			if (indexToDelete !== -1) {
 				this.allPinContainers.splice(indexToDelete, 1);
 			}
 			// remove data associated with that id from all frames
 			this.RemovePinDataForID(idNumber);
 			// remove the div itself
 			newDiv.remove();
-			this.UpdateAnimationPinNames();
+			//this.UpdateAnimationPinDefinitions();
 
 			//reset to origin
 			this.SelectOriginPin();
 		});
 		// break
 
-		this.UpdateAnimationPinNames();
+		this.UpdateAnimationPinDefinitions();
 		this.UpdatePinBoxStatus();
 	};
 
@@ -176,26 +176,47 @@ export class PinHandler {
 		this.projectData.currentlySelectedPin = this.GetPinNumberFromID(pinDiv.id);
 		// console.log('selected pin ' + this.projectData.currentlySelectedPin);
 		this.UpdatePinBoxStatus();
-		this.UpdateAnimationPinNames();
+		this.UpdateAnimationPinDefinitions();
 	};
 
 	private SelectOriginPin = () => {
-		this.projectData.currentlySelectedPin = 0;
+		this.projectData.currentlySelectedPin = -1;
 		this.UpdatePinBoxStatus();
 	};
 
 	private RemovePinDataForID = (pinID: number) => {
 		// check for matching id in pin list and remove
 
+		let indexToDelete = -1;
+
 		let deleted: boolean = false;
-		for (let i = 0; i < this.animationData.pins.length; i++) {
+		for (let i = 0; i < this.animationData.pinDefinitions.length; i++) {
 			// console.log('checking if ' + this.animationData.pins[i].id.toString + ' === ' + pinID.toString());
-			if (this.animationData.pins[i].id === pinID) {
-				delete this.animationData.pins[i];
+			if (this.animationData.pinDefinitions[i].id === pinID) {
+				indexToDelete = i;
 			}
 			// console.log('deleting pinID ' + pinID);
 			deleted = true;
 		}
+
+		if (indexToDelete == -1) {
+			return;
+		}
+
+		console.log('deleting: ' + indexToDelete);
+		let removedPinDefinition = this.animationData.pinDefinitions[indexToDelete];
+		console.log('removing:');
+		console.log(removedPinDefinition);
+		this.animationData.pinDefinitions.splice(indexToDelete, 1);
+		for (let i = this.animationData.pinDefinitions.length - 1; i >= 0; i--) {
+			let pinDefinition = this.animationData.pinDefinitions[i];
+			if (pinDefinition.id > removedPinDefinition.id) {
+				let div = document.getElementById('pinID_' + pinDefinition.id);
+				div!.id = 'pinID_' + (pinDefinition.id - 1);
+				pinDefinition.id -= 1;
+			}
+		}
+		console.log(this.animationData.pinDefinitions);
 
 		if (!deleted) {
 			// console.log('failed to find pinID ' + pinID + ' in list of pins');
@@ -204,7 +225,8 @@ export class PinHandler {
 		// delete pin data from each frame
 		for (let f = 0; f < this.animationData.frames.length; f++) {
 			if (this.animationData.frames[f].pinData[pinID] !== undefined) {
-				delete this.animationData.frames[f].pinData[pinID];
+				//delete this.animationData.frames[f].pinData[pinID];
+				this.animationData.frames[f].pinData.splice(pinID, 1);
 				// console.log('deleting pinID ' + pinID + ' data from frame ' + f);
 			} else {
 				// console.log('tried to delete pinID ' + pinID + ' data from frame ' + f + ' but it doesnt exist');

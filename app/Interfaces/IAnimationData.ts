@@ -1,5 +1,5 @@
 import { IFrame } from './IFrame';
-import { IPin } from './IPin';
+import { IPinDefinition } from './IPinDefinition';
 
 export interface IAnimationData {
 	frameRate: number;
@@ -7,5 +7,5 @@ export interface IAnimationData {
 	originY: number | null;
 	loop: boolean;
 	frames: IFrame[];
-	pins: IPin[];
+	pinDefinitions: IPinDefinition[];
 }
