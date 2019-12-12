@@ -55,13 +55,11 @@ export class CanvasHandler {
 		// get origin in pixels
 		const pixelX: number = Math.floor(offsetX / ratioWidth);
 		const pixelY: number = Math.floor(offsetY / ratioHeight);
-		// console.log('CLICK X:' + pixelX + ' Y:' + pixelY);
 		if (this.projectData.currentlySelectedPin === -1) {
 			// update animation data
 			this.animationData.originX = pixelX;
 			this.animationData.originY = pixelY;
 		} else {
-			// console.log('current pin id = ' + this.projectData.currentlySelectedPin);
 			const newPinData = {
 				x: pixelX,
 				y: pixelY

@@ -141,7 +141,6 @@ export class FrameHandler {
 				for (let p = 0; p < this.animationData.pinDefinitions.length; p++) {
 					if (this.animationData.pinDefinitions[p] !== undefined) {
 						const pinIDtoCheck = this.animationData.pinDefinitions[p].id;
-						// console.log('checking frame ' + f + ' for pinID ' + this.animationData.pins[p].name);
 						if (this.frameViewer.children[f] !== undefined) {
 							if (this.animationData.frames[f].pinData[pinIDtoCheck] === undefined) {
 								this.frameViewer.children[f].classList.add('warning');
@@ -216,6 +215,5 @@ export class FrameHandler {
 		}
 		this.RefreshImage();
 		window.requestAnimationFrame(this.windowAnimationUpdate);
-		// console.log('timestamp = ' + timestamp);
 	};
 }
